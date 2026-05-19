@@ -1,8 +1,9 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "artisan",
-      "use": "vercel-php@0.7.3"
+      "src": "public/index.php",
+      "use": "@vercel/php"
     }
   ],
   "routes": [
