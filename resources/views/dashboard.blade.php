@@ -350,20 +350,89 @@
 
     </nav>
 
-    <!-- TITLE -->
+   <!-- HERO SECTION -->
+<section class="bg-[#edf1eb] overflow-hidden">
+
+    <!-- CONTENT -->
     <div class="max-w-7xl mx-auto
-                px-4 sm:px-6 lg:px-8
-                pt-10 md:pt-14">
+                text-center
+                pt-20 md:pt-28
+                px-6">
 
-        <h1 class="text-5xl md:text-7xl
-                   font-light
-                   text-[#222822]">
+        <p class="tracking-[10px]
+                  text-[#55624d]
+                  text-sm md:text-lg
+                  mb-5">
 
-            All Products
+            ELEGANCE IN EVERY DETAIL
+
+        </p>
+
+        <h1 class="text-5xl
+                   md:text-7xl
+                   font-extralight
+                   text-[#55624d]
+                   leading-none">
+
+            ABAYA FISHAMO
 
         </h1>
 
+        <p class="mt-6
+                  text-sm md:text-xl
+                  text-[#55624d]/90
+                  max-w-2xl
+                  mx-auto">
+
+            Discover timeless modest fashion
+            designed with luxury and elegance.
+
+        </p>
+
+        <a href="#products"
+           class="inline-block
+                  mt-10
+                  px-10 py-4
+                  rounded-full
+                  bg-[#6c775f]
+                  hover:bg-[#55624d]
+                  transition
+                  shadow-xl
+                  tracking-[3px]
+                  text-white">
+
+            SHOP NOW
+
+        </a>
+
     </div>
+
+</section>
+
+<!-- BANNER IMAGE -->
+    <div class="mt-16">
+
+        <img src="{{ asset('images/banner-abaya.jpg') }}"
+             alt="Banner"
+             class="w-full
+                    h-auto
+                    object-cover">
+
+    </div>
+<!-- TITLE -->
+<div class="max-w-7xl mx-auto
+            px-4 sm:px-6 lg:px-8
+            pt-14">
+
+    <h1 class="text-5xl md:text-7xl
+               font-light
+               text-[#222822]">
+
+        All Products
+
+    </h1>
+
+</div>
 
     <!-- PRODUCT GRID -->
     <div class="max-w-7xl mx-auto
