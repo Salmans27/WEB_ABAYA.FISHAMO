@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "artisan",
+      "use": "vercel-php@0.7.3"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "public/index.php"
+    }
+  ]
+}
