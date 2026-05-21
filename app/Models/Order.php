@@ -12,6 +12,7 @@ class Order extends Model
         'address',
         'total_price',
         'total_item',
+        'status',
     ];
 
     public function items()

@@ -12,6 +12,33 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\AdminOrderController;
+
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])
+        ->name('admin.orders.index');
+
+    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
+        ->name('admin.orders.status');
+
+});
+/*
+|--------------------------------------------------------------------------
+| ADMIN ORDERS
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    Route::get(
+        '/admin/orders',
+        [OrderController::class, 'index']
+    )->name('admin.orders.index');
+
+});
 
 /*
 |--------------------------------------------------------------------------

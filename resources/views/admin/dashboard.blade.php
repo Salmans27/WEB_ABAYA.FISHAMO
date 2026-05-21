@@ -59,6 +59,12 @@
                         Products
 
                     </a>
+                    <a href="{{ route('admin.orders.index') }}"
+   class="text-[#4d5449] hover:text-black transition">
+
+    Orders
+
+</a>
 
                 </div>
 
@@ -262,6 +268,13 @@
                         Products
 
                     </a>
+
+                    <a href="{{ route('admin.orders.index') }}"
+   class="text-[#444] font-medium">
+
+    Orders
+
+</a>
 
                     <a href="/admin/products/create"
                        class="text-[#444] font-medium">

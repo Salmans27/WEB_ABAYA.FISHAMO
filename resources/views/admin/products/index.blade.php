@@ -1,252 +1,222 @@
-<x-app-layout>
+@extends('layouts.admin')
 
-    <x-slot name="header">
-        <h2 class="font-bold text-3xl text-gray-700">
-            Products Management
-        </h2>
-    </x-slot>
+@section('content')
 
-    <div class="min-h-screen bg-[#edf1ed] py-10">
+<!-- HEADER -->
+<div class="mb-10">
 
-        <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between flex-wrap gap-5">
 
-            <!-- TOP BAR -->
-            <div class="flex items-center justify-between mb-8">
+        <div>
+
+            <p class="uppercase tracking-[4px]
+                      text-sm text-[#6c7567] mb-3">
+
+                Admin Products
+
+            </p>
+
+            <h1 class="text-5xl font-light text-[#2d312b]">
+
+                Products
+                <span class="font-semibold">
+                    Management
+                </span>
+
+            </h1>
+
+            <p class="text-[#6b7368] text-lg mt-4">
+
+                Kelola seluruh produk Abaya Fishamo Store.
+
+            </p>
+
+        </div>
+
+        <a href="{{ route('admin.products.create') }}"
+           class="bg-[#55624d]
+                  hover:bg-[#40483a]
+                  text-white
+                  px-8 py-4
+                  rounded-2xl
+                  font-semibold
+                  shadow-lg
+                  transition">
+
+            + Tambah Produk
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- PRODUCTS TABLE -->
+<div class="bg-white
+            rounded-[35px]
+            overflow-hidden
+            border border-[#dfe4db]
+            shadow-[0_10px_35px_rgba(0,0,0,0.05)]">
+
+    <!-- TABLE HEADER -->
+    <div class="grid
+                grid-cols-12
+                bg-[#cfd5cd]
+                text-[#2d312b]
+                font-semibold
+                px-8 py-6">
+
+        <div class="col-span-5">
+            Produk
+        </div>
+
+        <div class="col-span-2">
+            Harga
+        </div>
+
+        <div class="col-span-2">
+            Kategori
+        </div>
+
+        <div class="col-span-1">
+            Stock
+        </div>
+
+        <div class="col-span-2 text-center">
+            Action
+        </div>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    @forelse($products as $product)
+
+        <div class="grid
+                    grid-cols-12
+                    items-center
+                    px-8 py-8
+                    border-t border-[#ecefea]">
+
+            <!-- PRODUCT -->
+            <div class="col-span-5 flex gap-6">
+
+                <img src="{{ asset('storage/' . $product->image) }}"
+                     class="w-32 h-40
+                            object-cover
+                            rounded-2xl
+                            shadow-md">
 
                 <div>
 
-                    <h1 class="text-4xl font-bold text-gray-700">
-                        All Products
-                    </h1>
+                    <h2 class="text-3xl
+                               font-semibold
+                               text-[#2d312b]">
 
-                    <p class="text-gray-500 mt-2">
-                        Kelola semua produk Abaya Fishamo Store.
+                        {{ $product->name }}
+
+                    </h2>
+
+                    <p class="text-[#7a8276] mt-2">
+                        #{{ $product->id }}
+                    </p>
+
+                    <p class="text-[#6f776b]
+                              mt-5
+                              leading-9
+                              max-w-xl">
+
+                        {{ Str::limit($product->description, 150) }}
+
                     </p>
 
                 </div>
 
-                <!-- BUTTON TAMBAH -->
-                <a href="/admin/products/create"
-                   class="bg-gray-700 hover:bg-black
-                          text-white px-6 py-3
-                          rounded-2xl font-semibold
-                          shadow-lg transition">
+            </div>
 
-                    + Tambah Produk
+            <!-- PRICE -->
+            <div class="col-span-2">
 
-                </a>
+                <h3 class="text-4xl
+                           font-semibold
+                           text-[#1fa34a]">
+
+                    Rp {{ number_format($product->price) }}
+
+                </h3>
 
             </div>
 
-            <!-- SUCCESS MESSAGE -->
-            @if(session('success'))
+            <!-- CATEGORY -->
+            <div class="col-span-2">
 
-                <div class="bg-green-100 text-green-700
-                            px-6 py-4 rounded-2xl mb-6">
+                <span class="bg-[#e7ebe4]
+                             text-[#2f312e]
+                             px-5 py-3
+                             rounded-2xl
+                             font-semibold">
 
-                    {{ session('success') }}
+                    {{ $product->category }}
 
-                </div>
+                </span>
 
-            @endif
+            </div>
 
-            <!-- TABLE CARD -->
-            <div class="bg-white rounded-3xl shadow-2xl
-                        overflow-hidden border border-gray-100">
+            <!-- STOCK -->
+            <div class="col-span-1">
 
-                <div class="overflow-x-auto">
+                <span class="bg-[#cdeccf]
+                             text-[#26733b]
+                             px-5 py-3
+                             rounded-2xl
+                             font-semibold">
 
-                    <table class="w-full">
+                    {{ $product->stock }} pcs
 
-                        <!-- TABLE HEADER -->
-                        <thead class="bg-[#dfe5df]">
+                </span>
 
-                            <tr>
+            </div>
 
-                                <th class="px-6 py-5 text-left text-gray-700 font-bold">
-                                    Produk
-                                </th>
+            <!-- ACTION -->
+            <div class="col-span-2">
 
-                                <th class="px-6 py-5 text-left text-gray-700 font-bold">
-                                    Harga
-                                </th>
+                <div class="flex justify-center gap-4">
 
-                                <th class="px-6 py-5 text-left text-gray-700 font-bold">
-                                    Kategori
-                                </th>
+                    <!-- EDIT -->
+                    <a href="{{ route('admin.products.edit', $product->id) }}"
+                       class="bg-[#facc15]
+                              hover:bg-yellow-400
+                              text-white
+                              px-6 py-3
+                              rounded-2xl
+                              font-semibold
+                              shadow">
 
-                                <th class="px-6 py-5 text-left text-gray-700 font-bold">
-                                    Stock
-                                </th>
+                        Edit
 
-                                <th class="px-6 py-5 text-center text-gray-700 font-bold">
-                                    Action
-                                </th>
+                    </a>
 
-                            </tr>
+                    <!-- DELETE -->
+                    <form action="{{ route('admin.products.destroy', $product->id) }}"
+                          method="POST">
 
-                        </thead>
+                        @csrf
+                        @method('DELETE')
 
-                        <!-- TABLE BODY -->
-                        <tbody>
+                        <button type="submit"
+                                onclick="return confirm('Yakin hapus produk?')"
+                                class="bg-[#ef4444]
+                                       hover:bg-red-500
+                                       text-white
+                                       px-6 py-3
+                                       rounded-2xl
+                                       font-semibold
+                                       shadow">
 
-                            @forelse($products as $product)
+                            Delete
 
-                                <tr class="border-b hover:bg-[#f5f7f5]
-                                           transition duration-200">
+                        </button>
 
-                                    <!-- PRODUCT -->
-                                    <td class="px-6 py-5">
-
-                                        <div class="flex items-center gap-4">
-
-                                            <!-- IMAGE -->
-                                            <img src="{{ asset('storage/' . $product->image) }}"
-                                                 alt="{{ $product->name }}"
-                                                 class="w-24 h-24 object-cover
-                                                        rounded-2xl shadow-md
-                                                        border">
-
-                                            <!-- INFO -->
-                                            <div>
-
-                                                <h2 class="font-bold text-xl text-gray-700">
-                                                    {{ $product->name }}
-                                                </h2>
-
-                                                <p class="text-sm text-gray-500 mt-1">
-                                                    #{{ $product->id }}
-                                                </p>
-
-                                                <p class="text-sm text-gray-400 mt-2 max-w-xs">
-                                                    {{ $product->description }}
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-                                    <!-- PRICE -->
-                                    <td class="px-6 py-5">
-
-                                        <p class="font-bold text-lg text-green-600">
-
-                                            Rp {{ number_format($product->price) }}
-
-                                        </p>
-
-                                    </td>
-
-                                    <!-- CATEGORY -->
-                                    <td class="px-6 py-5">
-
-                                        <span class="bg-[#edf1ed]
-                                                     text-gray-700
-                                                     px-4 py-2
-                                                     rounded-xl
-                                                     text-sm font-semibold">
-
-                                            {{ $product->category }}
-
-                                        </span>
-
-                                    </td>
-
-                                    <!-- STOCK -->
-                                    <td class="px-6 py-5">
-
-                                        <span class="bg-green-100
-                                                     text-green-700
-                                                     px-4 py-2
-                                                     rounded-xl
-                                                     text-sm font-bold">
-
-                                            {{ $product->stock }} pcs
-
-                                        </span>
-
-                                    </td>
-
-                                    <!-- ACTION -->
-                                    <td class="px-6 py-5">
-
-                                        <div class="flex items-center
-                                                    justify-center gap-3">
-
-                                            <!-- EDIT -->
-                                            <a href="/admin/products/{{ $product->id }}/edit"
-                                               class="bg-yellow-400
-                                                      hover:bg-yellow-500
-                                                      text-white
-                                                      px-5 py-2
-                                                      rounded-xl
-                                                      font-semibold
-                                                      shadow transition">
-
-                                                Edit
-
-                                            </a>
-
-                                            <!-- DELETE -->
-                                            <form action="/admin/products/{{ $product->id }}/delete"
-                                                  method="POST">
-
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit"
-                                                        onclick="return confirm('Yakin hapus produk ini?')"
-                                                        class="bg-red-500
-                                                               hover:bg-red-600
-                                                               text-white
-                                                               px-5 py-2
-                                                               rounded-xl
-                                                               font-semibold
-                                                               shadow transition">
-
-                                                    Delete
-
-                                                </button>
-
-                                            </form>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <!-- EMPTY -->
-                                <tr>
-
-                                    <td colspan="5"
-                                        class="text-center py-20">
-
-                                        <div class="flex flex-col items-center">
-
-                                            <p class="text-gray-400 text-2xl font-semibold">
-                                                Belum ada produk
-                                            </p>
-
-                                            <p class="text-gray-300 mt-2">
-                                                Tambahkan produk pertama kamu
-                                            </p>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
+                    </form>
 
                 </div>
 
@@ -254,6 +224,20 @@
 
         </div>
 
-    </div>
+    @empty
 
-</x-app-layout>
+        <div class="p-16 text-center">
+
+            <h2 class="text-3xl text-[#5f685b]">
+
+                Belum ada produk
+
+            </h2>
+
+        </div>
+
+    @endforelse
+
+</div>
+
+@endsection
