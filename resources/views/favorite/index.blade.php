@@ -101,7 +101,7 @@
                           text-[#2f312e]
                           font-semibold">
 
-                    <i class="bi bi-cart-plus-fill"></i>
+                    <i class="bi bi-handbag-fill"></i>
                     Cart
 
                 </a>

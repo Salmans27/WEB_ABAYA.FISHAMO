@@ -1,269 +1,180 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abaya Fishamo</title>
+@extends('layouts.store')
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+@section('title', 'Abaya Fishamo — Luxury Modest Fashion')
 
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Poppins',sans-serif;
-        }
+@section('meta_description', 'Abaya Fishamo menghadirkan koleksi fashion muslim premium dengan desain elegan, modern, dan mewah.')
 
-        body{
-            background:#f4f4ef;
-            color:#2d2d2d;
-        }
+@section('topbar_text', 'LUXURY MODEST FASHION • ABAYA FISHAMO')
 
-        /* NAVBAR */
-        .navbar{
-            width:100%;
-            padding:25px 80px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            position:absolute;
-            top:0;
-            z-index:10;
-        }
+@section('content')
 
-        .logo{
-            font-size:28px;
-            font-weight:700;
-            color:white;
-            letter-spacing:2px;
-        }
+{{-- HERO VIDEO --}}
+<section class="relative h-screen overflow-hidden">
 
-        .nav-links{
-            display:flex;
-            gap:20px;
-        }
+    <video autoplay muted loop playsinline
+           class="absolute inset-0 w-full h-full object-cover">
+        <source src="{{ asset('videos/luxury.mp4') }}" type="video/mp4">
+    </video>
 
-        .nav-links a{
-            text-decoration:none;
-            color:white;
-            font-weight:500;
-            transition:0.3s;
-        }
+    {{-- OVERLAY --}}
+    <div class="absolute inset-0 bg-black/30"></div>
 
-        .nav-links a:hover{
-            color:#d7e5d0;
-        }
+    {{-- HERO TEXT --}}
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
 
-        /* HERO */
-        .hero{
-            height:100vh;
-            background:
-                linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)),
-                url('https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=1600&auto=format&fit=crop');
-            background-size:cover;
-            background-position:center;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            padding:20px;
-        }
+        <p class="tracking-[8px] text-white/80 text-xs md:text-sm mb-4 uppercase">
+            New Collection 2026
+        </p>
 
-        .hero-content{
-            max-width:800px;
-            color:white;
-        }
+        <h1 class="text-5xl md:text-8xl font-extralight tracking-[10px] md:tracking-[20px] text-white leading-none">
+            ABAYA
+        </h1>
 
-        .hero-content h1{
-            font-size:72px;
-            font-weight:700;
-            margin-bottom:20px;
-        }
+        <p class="tracking-[8px] md:tracking-[14px] text-sm md:text-lg text-white/90 mt-2">
+            FISHAMO
+        </p>
 
-        .hero-content p{
-            font-size:20px;
-            margin-bottom:35px;
-            color:#f0f0f0;
-        }
+        <p class="mt-6 text-white/80 text-sm md:text-lg max-w-lg leading-relaxed">
+            Discover timeless modest fashion designed with luxury and elegance.
+        </p>
 
-        .btn{
-            display:inline-block;
-            padding:15px 35px;
-            background:#6f8f72;
-            color:white;
-            text-decoration:none;
-            border-radius:40px;
-            font-weight:600;
-            transition:0.3s;
-        }
+        <div class="flex items-center gap-4 mt-10">
 
-        .btn:hover{
-            background:#55745a;
-            transform:translateY(-2px);
-        }
-
-        /* COLLECTION */
-        .section{
-            padding:80px;
-        }
-
-        .section-title{
-            text-align:center;
-            margin-bottom:50px;
-        }
-
-        .section-title h2{
-            font-size:40px;
-            color:#4e6752;
-            margin-bottom:10px;
-        }
-
-        .section-title p{
-            color:#777;
-        }
-
-        .products{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-            gap:30px;
-        }
-
-        .card{
-            background:white;
-            border-radius:20px;
-            overflow:hidden;
-            box-shadow:0 5px 20px rgba(0,0,0,0.08);
-            transition:0.3s;
-        }
-
-        .card:hover{
-            transform:translateY(-8px);
-        }
-
-        .card img{
-            width:100%;
-            height:380px;
-            object-fit:cover;
-        }
-
-        .card-body{
-            padding:20px;
-        }
-
-        .card-body h3{
-            margin-bottom:10px;
-            color:#4e6752;
-        }
-
-        .price{
-            color:#6f8f72;
-            font-weight:600;
-        }
-
-        /* FOOTER */
-        footer{
-            background:#4e6752;
-            color:white;
-            text-align:center;
-            padding:30px;
-            margin-top:50px;
-        }
-
-        @media(max-width:768px){
-
-            .navbar{
-                padding:20px;
-            }
-
-            .hero-content h1{
-                font-size:42px;
-            }
-
-            .hero-content p{
-                font-size:16px;
-            }
-
-            .section{
-                padding:50px 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="logo">ABAYA FISHAMO</div>
-
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        </div>
-    </div>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Elegant Muslim Fashion</h1>
-
-            <p>
-                Discover premium abaya collections with elegant modern style
-                crafted for confidence and beauty.
-            </p>
-
-            <a href="/login" class="btn">
-                Shop Collection
+            <a href="#products"
+               class="px-10 py-4 rounded-full bg-white text-[#55624d]
+                      hover:bg-[#edf1eb] hover:scale-105 transition shadow-xl
+                      tracking-[3px] text-sm font-semibold">
+                SHOP NOW
             </a>
+
+            @guest
+                <a href="{{ route('register') }}"
+                   class="px-8 py-4 rounded-full border border-white/50 text-white
+                          hover:bg-white/10 transition tracking-[2px] text-sm">
+                    JOIN US
+                </a>
+            @endguest
+
         </div>
-    </section>
 
-    <!-- COLLECTION -->
-    <section class="section">
-
-        <div class="section-title">
-            <h2>New Collection</h2>
-            <p>Luxury modest wear with timeless elegance</p>
-        </div>
-
-        <div class="products">
-
-    <div class="card">
-        <img src="{{ asset('storage/products/1778754868.jpg') }}" alt="Abaya 1">
-
-        <div class="card-body">
-            <h3>Sage Premium Abaya</h3>
-            <div class="price">Rp 499.000</div>
-        </div>
     </div>
 
-    <div class="card">
-        <img src="{{ asset('storage/products/1778754953.jpg') }}" alt="Abaya 2">
-
-        <div class="card-body">
-            <h3>Luxury Olive Dress</h3>
-            <div class="price">Rp 579.000</div>
-        </div>
+    {{-- SCROLL INDICATOR --}}
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60">
+        <p class="text-[10px] tracking-[4px]">SCROLL</p>
+        <i class="bi bi-chevron-down text-lg animate-bounce"></i>
     </div>
 
-    <div class="card">
-        <img src="{{ asset('storage/products/1779105308.jpg') }}" alt="Abaya 3">
+</section>
 
-        <div class="card-body">
-            <h3>Elegant Daily Abaya</h3>
-            <div class="price">Rp 459.000</div>
-        </div>
+{{-- FEATURED PRODUCTS --}}
+<section id="products" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+
+    {{-- HEADING --}}
+    <div class="mb-16 text-center">
+
+        <p class="tracking-[8px] text-[#7b8870] text-sm uppercase">New Collection</p>
+
+        <h2 class="text-5xl md:text-7xl font-light mt-4 text-[#55624d]">
+            Featured Products
+        </h2>
+
     </div>
 
-</div>
+    {{-- GRID --}}
+    @if($products->count() > 0)
+
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-12">
+
+            @foreach($products as $product)
+
+                <a href="{{ route('products.show', $product->id) }}" class="group">
+
+                    {{-- IMAGE --}}
+                    <div class="overflow-hidden rounded-[28px] bg-white shadow-lg">
+
+                        <img src="{{ asset('storage/' . $product->image) }}"
+                             alt="{{ $product->name }}"
+                             class="w-full h-[260px] md:h-[360px] object-cover
+                                    group-hover:scale-105 transition duration-500">
+
+                    </div>
+
+                    {{-- INFO --}}
+                    <div class="pt-5">
+
+                        <h3 class="text-lg md:text-xl font-light line-clamp-1">
+                            {{ $product->name }}
+                        </h3>
+
+                        <p class="text-[#7d8577] mt-1 text-sm">
+                            {{ $product->category }}
+                        </p>
+
+                        <p class="mt-3 text-[#55624d] font-semibold text-lg">
+                            Rp {{ number_format($product->price) }}
+                        </p>
+
+                    </div>
+
+                </a>
+
+            @endforeach
+
         </div>
 
-    </section>
+    @else
 
-    <footer>
-        © 2026 Abaya Fishamo — Premium Muslim Fashion
-    </footer>
+        <div class="text-center py-20 text-[#7b8870]">
+            <i class="bi bi-box2 text-5xl"></i>
+            <p class="mt-4 text-lg">Belum ada produk tersedia.</p>
+        </div>
 
-</body>
-</html>
+    @endif
+
+</section>
+
+{{-- ABOUT --}}
+<section id="about" class="bg-[#dfe6da] py-24">
+
+    <div class="max-w-5xl mx-auto text-center px-6">
+
+        <p class="tracking-[8px] text-[#7b8870] text-sm uppercase">About Us</p>
+
+        <h2 class="text-5xl md:text-7xl font-light text-[#55624d] mt-5">
+            Luxury Modest Fashion
+        </h2>
+
+        <p class="mt-10 text-lg md:text-2xl leading-relaxed text-[#55624d]/80 max-w-3xl mx-auto">
+            Abaya Fishamo menghadirkan fashion muslim premium
+            dengan desain elegan, modern, dan mewah
+            untuk wanita yang ingin tampil anggun setiap hari.
+        </p>
+
+        <div class="flex items-center justify-center gap-6 mt-12">
+
+            <a href="https://www.instagram.com/abaya.fishamo" target="_blank"
+               class="w-12 h-12 rounded-full bg-[#55624d] text-white
+                      flex items-center justify-center hover:scale-110 transition shadow-lg">
+                <i class="bi bi-instagram text-xl"></i>
+            </a>
+
+            <a href="https://wa.me/6283180065732" target="_blank"
+               class="w-12 h-12 rounded-full bg-[#55624d] text-white
+                      flex items-center justify-center hover:scale-110 transition shadow-lg">
+                <i class="bi bi-whatsapp text-xl"></i>
+            </a>
+
+            <a href="https://www.tiktok.com/@abaya.fishamo" target="_blank"
+               class="w-12 h-12 rounded-full bg-[#55624d] text-white
+                      flex items-center justify-center hover:scale-110 transition shadow-lg">
+                <i class="bi bi-tiktok text-xl"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+@endsection

@@ -8,41 +8,40 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <script>
 
-    function toggleProvince()
+function togglePayment()
+{
+    const payment =
+        document.querySelector('[name="payment_method"]').value;
+
+    const qris =
+        document.getElementById('qris-section');
+
+    const proof =
+        document.getElementById('proof-section');
+
+    if(payment === 'COD')
     {
-        const country =
-            document.getElementById('country').value;
-
-        const provinceWrapper =
-            document.getElementById('province-wrapper');
-
-        const province =
-            document.getElementById('province');
-
-        if (country === 'Indonesia')
-        {
-            provinceWrapper.style.display = 'block';
-
-            province.required = true;
-        }
-        else
-        {
-            provinceWrapper.style.display = 'none';
-
-            province.required = false;
-
-            province.value = '';
-        }
+        qris.style.display = 'none';
+        proof.style.display = 'none';
     }
+    else
+    {
+        qris.style.display = 'block';
+        proof.style.display = 'block';
+    }
+}
 
-    toggleProvince();
+document
+.querySelector('[name="payment_method"]')
+.addEventListener('change', togglePayment);
+
+togglePayment();
 
 </script>
 
@@ -76,7 +75,6 @@
             <!-- LEFT -->
             <div class="flex items-center gap-10">
 
-                <!-- LOGO -->
                 <a href="/dashboard"
                    class="flex items-center gap-3">
 
@@ -108,7 +106,6 @@
 
                 </a>
 
-                <!-- MENU -->
                 <a href="/dashboard"
                    class="font-semibold text-[#2f312e]">
 
@@ -121,7 +118,6 @@
             <!-- RIGHT -->
             <div class="flex items-center gap-4">
 
-                <!-- CART -->
                 <a href="/cart"
                    class="relative px-5 py-3
                           rounded-2xl
@@ -164,7 +160,6 @@
 
                 </a>
 
-                <!-- PROFILE -->
                 <div class="flex items-center gap-3
                             bg-white/90
                             px-4 py-2
@@ -213,9 +208,33 @@
 
     <div class="max-w-7xl mx-auto px-6">
 
-        <form action="/checkout/process" method="POST">
+        <form action="/checkout/process"
+              method="POST"
+              enctype="multipart/form-data">
 
             @csrf
+
+            @if(isset($buyNow))
+
+                <input type="hidden" name="buy_now" value="1">
+
+                <input type="hidden"
+                       name="product_id"
+                       value="{{ $product_id }}">
+
+                <input type="hidden"
+                       name="size"
+                       value="{{ $size }}">
+
+                <input type="hidden"
+                       name="color"
+                       value="{{ $color }}">
+
+                <input type="hidden"
+                       name="quantity"
+                       value="{{ $quantity }}">
+
+            @endif
 
             @foreach($selectedItems as $selectedItem)
 
@@ -248,36 +267,33 @@
 
                     </div>
 
-                   <!-- COUNTRY -->
-<div class="mb-6">
+                    <!-- COUNTRY -->
+                    <div class="mb-6">
 
-    <select name="country"
-            id="country"
-            onchange="toggleProvince()"
-            class="w-full rounded-2xl
-                   border border-[#d7ddd2]
-                   py-4 px-5
-                   bg-[#f8faf7]">
+                        <select name="country"
+                                id="country"
+                                onchange="toggleProvince()"
+                                class="w-full rounded-2xl
+                                       border border-[#d7ddd2]
+                                       py-4 px-5
+                                       bg-[#f8faf7]">
 
-        <option value="Indonesia">
-            Indonesia
-        </option>
+                            <option value="Indonesia">
+                                Indonesia
+                            </option>
 
-        <option value="Malaysia">
-            Malaysia
-        </option>
+                            <option value="Malaysia">
+                                Malaysia
+                            </option>
 
-        <option value="Singapore">
-            Singapore
-        </option>
+                            <option value="Singapore">
+                                Singapore
+                            </option>
 
-        <option value="Brunei">
-            Brunei Darussalam
-        </option>
+                        </select>
 
-    </select>
+                    </div>
 
-</div>
                     <!-- NAME -->
                     <div class="grid grid-cols-2 gap-4 mb-6">
 
@@ -316,32 +332,30 @@
                     </div>
 
                     <!-- CITY -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-    <!-- CITY -->
-    <input type="text"
-           name="city"
-           placeholder="Kota"
-           required
-           class="rounded-2xl
-                  border border-[#d7ddd2]
-                  py-4 px-5
-                  bg-[#f8faf7]">
+                        <input type="text"
+                               name="city"
+                               placeholder="Kota"
+                               required
+                               class="rounded-2xl
+                                      border border-[#d7ddd2]
+                                      py-4 px-5
+                                      bg-[#f8faf7]">
 
-    <!-- PROVINCE -->
-    <div id="province-wrapper">
+                        <div id="province-wrapper">
 
-        <select name="province"
-                id="province"
-                class="rounded-2xl
-                       border border-[#d7ddd2]
-                       py-4 px-5
-                       bg-[#f8faf7]
-                       w-full">
+                            <select name="province"
+                                    id="province"
+                                    class="rounded-2xl
+                                           border border-[#d7ddd2]
+                                           py-4 px-5
+                                           bg-[#f8faf7]
+                                           w-full">
 
-            <option value="">
-                Pilih Provinsi
-            </option>
+                                <option value="">
+                                    Pilih Provinsi
+                                </option>
 
             <option>Aceh</option>
             <option>Bali</option>
@@ -377,21 +391,20 @@
             <option>Sumatera Utara</option>
             <option>Yogyakarta</option>
 
-        </select>
+                            </select>
 
-    </div>
+                        </div>
 
-    <!-- POSTAL -->
-    <input type="text"
-           name="postal_code"
-           placeholder="Kode Pos"
-           required
-           class="rounded-2xl
-                  border border-[#d7ddd2]
-                  py-4 px-5
-                  bg-[#f8faf7]">
+                        <input type="text"
+                               name="postal_code"
+                               placeholder="Kode Pos"
+                               required
+                               class="rounded-2xl
+                                      border border-[#d7ddd2]
+                                      py-4 px-5
+                                      bg-[#f8faf7]">
 
-</div>
+                    </div>
 
                     <!-- PHONE -->
                     <div class="mb-6">
@@ -425,12 +438,8 @@
                                 COD
                             </option>
 
-                            <option value="Transfer Bank">
-                                Transfer Bank
-                            </option>
-
                             <option value="QRIS">
-                                QRIS
+                                QRIS Transfer
                             </option>
 
                         </select>
@@ -454,7 +463,6 @@
 
                         <div class="flex gap-5 mb-8">
 
-                            <!-- IMAGE -->
                             <div class="relative">
 
                                 <img src="{{ asset('storage/' . $item->product->image) }}"
@@ -475,7 +483,6 @@
 
                             </div>
 
-                            <!-- INFO -->
                             <div class="flex-1">
 
                                 <h3 class="text-2xl font-semibold">
@@ -522,6 +529,53 @@
 
                     </div>
 
+                    <!-- QRIS -->
+                   <div class="mt-10" id="qris-section">
+
+                        <h3 class="text-2xl font-semibold mb-4">
+                            Pembayaran QRIS
+                        </h3>
+
+                        <p class="text-[#6d7568] mb-5">
+                            Scan QRIS berikut untuk melakukan pembayaran.
+                        </p>
+
+                        <div class="bg-[#f8faf7]
+                                    border border-[#d7ddd2]
+                                    rounded-3xl
+                                    p-6
+                                    flex justify-center">
+
+                            <img src="{{ asset('qris/qris-butik.png') }}"
+                                 alt="QRIS"
+                                 class="w-72 rounded-2xl shadow-md">
+
+                        </div>
+
+                    </div>
+
+                    <!-- UPLOAD -->
+                  <div class="mt-8" id="proof-section">
+
+                        <label class="block mb-3
+                                      font-semibold
+                                      text-[#2f312e]">
+
+                            Upload Bukti Transfer
+
+                        </label>
+
+                        <input type="file"
+                               name="proof"
+                               required
+                               class="w-full
+                                      rounded-2xl
+                                      border border-[#d7ddd2]
+                                      py-4 px-5
+                                      bg-[#f8faf7]">
+
+                    </div>
+
                     <!-- BUTTON -->
                     <button type="submit"
                             class="w-full mt-10
@@ -548,6 +602,39 @@
     </div>
 
 </div>
+
+<script>
+
+    function toggleProvince()
+    {
+        const country =
+            document.getElementById('country').value;
+
+        const provinceWrapper =
+            document.getElementById('province-wrapper');
+
+        const province =
+            document.getElementById('province');
+
+        if (country === 'Indonesia')
+        {
+            provinceWrapper.style.display = 'block';
+
+            province.required = true;
+        }
+        else
+        {
+            provinceWrapper.style.display = 'none';
+
+            province.required = false;
+
+            province.value = '';
+        }
+    }
+
+    toggleProvince();
+
+</script>
 
 </body>
 </html>

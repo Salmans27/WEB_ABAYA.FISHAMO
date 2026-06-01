@@ -177,6 +177,26 @@
 
     </div>
 
+    @if($order->proof)
+
+<div class="mt-6">
+
+    <p class="text-sm text-gray-500 mb-2">
+        Bukti Pembayaran
+    </p>
+
+    <a href="{{ asset('storage/' . $order->proof) }}"
+       target="_blank">
+
+        <img src="{{ asset('storage/' . $order->proof) }}"
+             class="w-40 rounded-2xl border shadow">
+
+    </a>
+
+</div>
+
+@endif
+
     <!-- UPDATE STATUS -->
     <form
         action="{{ route('admin.orders.status', $order->id) }}"

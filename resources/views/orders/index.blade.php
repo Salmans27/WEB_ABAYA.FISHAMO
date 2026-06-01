@@ -13,6 +13,26 @@
 
 <body class="bg-[#edf1eb] text-[#2f312e]">
 
+@php
+    use App\Models\Cart;
+
+    $cartCount = Cart::where('user_id', auth()->id())->count();
+@endphp
+
+<!-- TOP BAR -->
+<div class="bg-gradient-to-r
+            from-[#55624d]
+            via-[#7b8870]
+            to-[#55624d]
+            text-white text-center
+            py-3
+            text-[10px] md:text-sm
+            tracking-[4px]">
+
+    TRACK YOUR ORDER • ABAYA FISHAMO
+
+</div>
+
 <!-- NAVBAR -->
 <nav class="sticky top-0 z-50
             bg-[#edf1eb]/95
@@ -20,106 +40,121 @@
             border-b border-[#d8ddd3]
             shadow-sm">
 
-    <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div class="flex items-center justify-between h-24">
+        <div class="flex items-center justify-between h-20 md:h-24">
 
             <!-- LEFT -->
-            <div class="flex items-center gap-14">
+            <div class="hidden lg:flex items-center gap-8">
 
-                <!-- LOGO -->
-                <a href="/" class="flex items-center gap-4">
+                <a href="/dashboard"
+                   class="text-[#4d5449] hover:text-black transition">
 
-                    <img
-                        src="{{ asset('images/logo.png') }}"
-                        class="w-14 h-14 rounded-full shadow">
-
-                    <div>
-
-                        <h1 class="text-3xl font-semibold text-[#2f312e]">
-                            Abaya Fishamo
-                        </h1>
-
-                        <p class="text-[#7b8870]">
-                            Luxury Collection
-                        </p>
-
-                    </div>
+                    All Products
 
                 </a>
 
-                <!-- MENU -->
-                <div class="hidden md:flex items-center gap-8">
+                <a href="{{ route('my.orders') }}"
+                   class="text-[#2d312b]
+                          border-b border-[#2d312b]
+                          pb-1
+                          font-medium">
 
-                    <a href="/dashboard"
-                       class="text-lg font-medium hover:text-black transition">
+                    Pesanan Saya
 
-                        Dashboard
+                </a>
 
-                    </a>
+            </div>
 
-                    <a href="/products"
-                       class="text-lg font-medium hover:text-black transition">
+            <!-- MOBILE -->
+            <button onclick="toggleMenu()"
+                    class="lg:hidden text-3xl text-[#4b5446]">
 
-                        Products
+                <i class="bi bi-list-stars"></i>
 
-                    </a>
+            </button>
 
-                    <a href="/orders"
-                       class="text-lg font-semibold
-                              text-[#55624d]
-                              border-b-2
-                              border-[#55624d]
-                              pb-1">
+            <!-- LOGO -->
+            <div class="text-center">
 
-                        Pesanan
+                <h1 class="text-2xl md:text-4xl
+                           tracking-[6px] md:tracking-[10px]
+                           font-light
+                           leading-none
+                           text-[#252825]">
 
-                    </a>
+                    ABAYA
 
-                </div>
+                </h1>
+
+                <p class="text-[10px] md:text-xs
+                          tracking-[5px]
+                          text-[#6d7568]
+                          mt-1">
+
+                    FISHAMO
+
+                </p>
 
             </div>
 
             <!-- RIGHT -->
-            <div class="flex items-center gap-5">
+            <div class="flex items-center gap-3 md:gap-5">
 
                 <!-- CART -->
                 <a href="/cart"
-                   class="bg-white
-                          px-6 py-4
-                          rounded-2xl
-                          shadow
-                          flex items-center gap-3
-                          hover:scale-105
-                          transition">
+                   class="relative
+                          w-12 h-12
+                          rounded-full
+                          bg-gradient-to-br
+                          from-[#66725d]
+                          to-[#4e5b46]
+                          flex items-center justify-center
+                          text-white
+                          shadow-lg
+                          hover:scale-105 transition">
 
-                    <i class="bi bi-cart text-xl"></i>
+                    <i class="bi bi-handbag-fill"></i>
 
-                    <span class="font-semibold">
-                        Cart
-                    </span>
+                    @if($cartCount > 0)
+
+                        <span class="absolute
+                                     -top-1 -right-1
+                                     bg-[#cfd7c8]
+                                     text-[#55624d]
+                                     text-[10px]
+                                     w-5 h-5
+                                     rounded-full
+                                     flex items-center justify-center">
+
+                            {{ $cartCount }}
+
+                        </span>
+
+                    @endif
 
                 </a>
 
                 <!-- PROFILE -->
-                <div class="flex items-center gap-4
-                            bg-white
-                            px-4 py-3
-                            rounded-2xl
-                            shadow">
+                <div class="flex items-center gap-3
+                            bg-white/80
+                            px-3 py-2
+                            rounded-full
+                            border border-[#d7ddd2]
+                            shadow-sm">
 
                     <img
                         src="{{ asset('storage/' . auth()->user()->photo) }}"
-                        class="w-12 h-12 rounded-full object-cover">
+                        class="w-10 h-10 rounded-full object-cover">
 
-                    <div>
+                    <div class="hidden md:block">
 
-                        <p class="font-semibold">
-                            {{ auth()->user()->name }}
+                        <p class="text-xs text-gray-500">
+                            Welcome
                         </p>
 
-                        <p class="text-sm text-gray-500">
-                            User
+                        <p class="font-semibold text-sm">
+                            {{ auth()->user()->name }}
                         </p>
 
                     </div>
@@ -135,210 +170,277 @@
 </nav>
 
 <!-- PAGE -->
-<div class="max-w-6xl mx-auto py-12 px-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
     <!-- TITLE -->
-    <div class="mb-12">
+    <div class="mb-14">
 
-        <p class="uppercase tracking-[4px]
-                  text-[#7b8870]
-                  text-sm">
+        <p class="tracking-[8px]
+                  text-[#55624d]
+                  text-sm md:text-lg
+                  mb-5">
 
-            ABAYA FISHAMO
+            ORDER HISTORY
 
         </p>
 
-        <h1 class="text-6xl font-light mt-3">
+        <h1 class="text-5xl md:text-7xl
+                   font-extralight
+                   text-[#55624d]">
+
             Pesanan Saya
+
         </h1>
 
     </div>
 
     @if($orders->count() > 0)
 
-        @foreach($orders as $order)
+        <div class="space-y-10">
 
-            <div class="bg-white
-                        rounded-[40px]
-                        shadow-lg
-                        border border-[#dde3d7]
-                        p-10
-                        mb-10">
+            @foreach($orders as $order)
 
-                <!-- TOP -->
-                <div class="flex flex-col md:flex-row
-                            md:items-center
-                            md:justify-between
-                            gap-8">
+                <div class="bg-white
+                            rounded-[35px]
+                            border border-[#dbe2d6]
+                            shadow-[0_15px_40px_rgba(0,0,0,0.06)]
+                            overflow-hidden">
 
-                    <!-- LEFT -->
-                    <div>
+                    <!-- HEADER -->
+                    <div class="p-8 md:p-10 border-b border-[#edf1eb]">
 
-                        <h2 class="text-4xl font-semibold">
-                            Order #{{ $order->id }}
-                        </h2>
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
 
-                        <p class="text-gray-500 mt-3 text-lg">
-                            {{ $order->created_at->format('d M Y H:i') }}
-                        </p>
+                            <div>
 
-                    </div>
+                                <p class="text-sm tracking-[4px]
+                                          text-[#7b8870]
+                                          uppercase">
 
-                    <!-- TOTAL -->
-                    <div class="text-right">
+                                    Order ID
 
-                        <p class="text-gray-500 text-lg">
-                            Total Harga
-                        </p>
+                                </p>
 
-                        <p class="text-5xl font-bold text-[#55624d] mt-2">
+                                <h2 class="text-3xl md:text-4xl
+                                           font-light
+                                           mt-2">
 
-                            Rp {{ number_format($order->total_price) }}
+                                    #{{ $order->id }}
 
-                        </p>
+                                </h2>
 
-                    </div>
+                                <p class="text-[#7d8577] mt-3">
 
-                </div>
+                                    {{ $order->created_at->format('d M Y • H:i') }}
 
-                <!-- STATUS -->
-                <div class="mt-10">
-
-                    @php
-
-                        $statusColor = match($order->status) {
-
-                            'pending' => 'bg-gray-200 text-gray-700',
-                            'paid' => 'bg-blue-100 text-blue-700',
-                            'packing' => 'bg-yellow-100 text-yellow-700',
-                            'shipped' => 'bg-purple-100 text-purple-700',
-                            'delivered' => 'bg-green-100 text-green-700',
-                            'cancelled' => 'bg-red-100 text-red-700',
-
-                            default => 'bg-gray-200 text-gray-700'
-
-                        };
-
-                    @endphp
-
-                    <div class="flex flex-wrap items-center gap-5">
-
-                        <!-- BADGE -->
-                        <span class="px-6 py-3 rounded-full
-                                     font-bold text-lg {{ $statusColor }}">
-
-                            {{ strtoupper($order->status) }}
-
-                        </span>
-
-                        <!-- TIMELINE -->
-                        <div class="flex items-center gap-4 text-lg">
-
-                            <div class="flex items-center gap-2">
-
-                                <div class="w-4 h-4 rounded-full
-                                    {{ in_array($order->status, ['paid','packing','shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
-                                </div>
-
-                                <span>Dibayar</span>
+                                </p>
 
                             </div>
 
-                            <div class="w-10 h-[2px] bg-gray-300"></div>
+                            <div class="text-left lg:text-right">
 
-                            <div class="flex items-center gap-2">
+                                <p class="text-[#7d8577]">
+                                    Total Harga
+                                </p>
 
-                                <div class="w-4 h-4 rounded-full
-                                    {{ in_array($order->status, ['packing','shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
-                                </div>
+                                <h3 class="text-4xl md:text-5xl
+                                           font-bold
+                                           text-[#55624d]
+                                           mt-2">
 
-                                <span>Dikemas</span>
+                                    Rp {{ number_format($order->total_price) }}
 
-                            </div>
-
-                            <div class="w-10 h-[2px] bg-gray-300"></div>
-
-                            <div class="flex items-center gap-2">
-
-                                <div class="w-4 h-4 rounded-full
-                                    {{ in_array($order->status, ['shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
-                                </div>
-
-                                <span>Dikirim</span>
-
-                            </div>
-
-                            <div class="w-10 h-[2px] bg-gray-300"></div>
-
-                            <div class="flex items-center gap-2">
-
-                                <div class="w-4 h-4 rounded-full
-                                    {{ $order->status == 'delivered' ? 'bg-green-500' : 'bg-gray-300' }}">
-                                </div>
-
-                                <span>Sampai</span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- PRODUCTS -->
-                <div class="mt-10 space-y-8">
-
-                    @foreach($order->items as $item)
-
-                        <div class="flex flex-col md:flex-row
-                                    gap-6
-                                    items-center
-                                    border-t
-                                    pt-8">
-
-                            <!-- IMAGE -->
-                            <img
-                                src="{{ asset('storage/' . $item->product->image) }}"
-                                class="w-32 h-32 object-cover rounded-3xl shadow">
-
-                            <!-- INFO -->
-                            <div class="flex-1">
-
-                                <h3 class="text-3xl font-semibold">
-                                    {{ $item->product->name }}
                                 </h3>
 
-                                <p class="text-gray-500 mt-3 text-xl">
-                                    {{ $item->color }} / {{ $item->size }}
-                                </p>
+                            </div>
 
-                                <p class="text-gray-500 text-lg mt-1">
-                                    Qty : {{ $item->quantity }}
-                                </p>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="mt-10">
+
+                            @php
+
+                                $statusColor = match($order->status) {
+
+                                    'pending' => 'bg-gray-200 text-gray-700',
+                                    'paid' => 'bg-blue-100 text-blue-700',
+                                    'packing' => 'bg-yellow-100 text-yellow-700',
+                                    'shipped' => 'bg-purple-100 text-purple-700',
+                                    'delivered' => 'bg-green-100 text-green-700',
+                                    'cancelled' => 'bg-red-100 text-red-700',
+
+                                    default => 'bg-gray-200 text-gray-700'
+
+                                };
+
+                            @endphp
+
+                            <!-- BADGE -->
+                            <span class="inline-flex
+                                         items-center
+                                         px-6 py-3
+                                         rounded-full
+                                         text-sm md:text-base
+                                         font-bold
+                                         {{ $statusColor }}">
+
+                                {{ strtoupper($order->status) }}
+
+                            </span>
+
+                            <!-- TIMELINE -->
+                            <div class="mt-8
+                                        overflow-x-auto">
+
+                                <div class="flex items-center gap-5 min-w-[700px]">
+
+                                    <!-- DIBAYAR -->
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-5 h-5 rounded-full
+                                            {{ in_array($order->status, ['paid','packing','shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
+                                        </div>
+
+                                        <span>Dibayar</span>
+
+                                    </div>
+
+                                    <div class="w-16 h-[2px] bg-gray-300"></div>
+
+                                    <!-- DIKEMAS -->
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-5 h-5 rounded-full
+                                            {{ in_array($order->status, ['packing','shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
+                                        </div>
+
+                                        <span>Dikemas</span>
+
+                                    </div>
+
+                                    <div class="w-16 h-[2px] bg-gray-300"></div>
+
+                                    <!-- DIKIRIM -->
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-5 h-5 rounded-full
+                                            {{ in_array($order->status, ['shipped','delivered']) ? 'bg-green-500' : 'bg-gray-300' }}">
+                                        </div>
+
+                                        <span>Dikirim</span>
+
+                                    </div>
+
+                                    <div class="w-16 h-[2px] bg-gray-300"></div>
+
+                                    <!-- SAMPAI -->
+                                    <div class="flex items-center gap-3">
+
+                                        <div class="w-5 h-5 rounded-full
+                                            {{ $order->status == 'delivered' ? 'bg-green-500' : 'bg-gray-300' }}">
+                                        </div>
+
+                                        <span>Sampai</span>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
                         </div>
 
-                    @endforeach
+                    </div>
+
+                    <!-- PRODUCTS -->
+                    <div class="p-8 md:p-10 space-y-8">
+
+                        @foreach($order->items as $item)
+
+                            <div class="flex flex-col md:flex-row gap-6">
+
+                                <!-- IMAGE -->
+                                <div class="w-full md:w-[150px]">
+
+                                    <img
+                                        src="{{ asset('storage/' . $item->product->image) }}"
+                                        class="w-full h-[170px]
+                                               object-cover
+                                               rounded-[28px]
+                                               shadow-md">
+
+                                </div>
+
+                                <!-- INFO -->
+                                <div class="flex-1 flex flex-col justify-center">
+
+                                    <h3 class="text-2xl md:text-3xl font-light">
+
+                                        {{ $item->product->name }}
+
+                                    </h3>
+
+                                    <div class="mt-4 flex flex-wrap gap-5 text-[#6f7769]">
+
+                                        <p>
+                                            Color :
+                                            <span class="font-semibold text-[#2f312e]">
+                                                {{ $item->color }}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            Size :
+                                            <span class="font-semibold text-[#2f312e]">
+                                                {{ $item->size }}
+                                            </span>
+                                        </p>
+
+                                        <p>
+                                            Qty :
+                                            <span class="font-semibold text-[#2f312e]">
+                                                {{ $item->quantity }}
+                                            </span>
+                                        </p>
+
+                                    </div>
+
+                                    <p class="mt-5
+                                              text-2xl
+                                              font-bold
+                                              text-[#55624d]">
+
+                                        Rp {{ number_format($item->price) }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
 
                 </div>
 
-            </div>
+            @endforeach
 
-        @endforeach
+        </div>
 
     @else
 
         <div class="bg-white
-                    rounded-[40px]
-                    shadow-lg
+                    rounded-[35px]
                     p-20
-                    text-center">
+                    text-center
+                    shadow-lg">
 
-            <h2 class="text-5xl text-gray-400">
+            <h2 class="text-4xl text-gray-400">
+
                 Belum ada pesanan
+
             </h2>
 
         </div>
@@ -346,6 +448,19 @@
     @endif
 
 </div>
+
+<script>
+
+    function toggleMenu() {
+
+        document
+            .getElementById('mobileMenu')
+            ?.classList
+            .toggle('hidden');
+
+    }
+
+</script>
 
 </body>
 </html>

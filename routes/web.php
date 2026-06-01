@@ -1,56 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
-use App\Models\Product;
-use App\Models\User;
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\AdminOrderController;
 
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-
-    Route::get('/orders', [AdminOrderController::class, 'index'])
-        ->name('admin.orders.index');
-
-    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
-        ->name('admin.orders.status');
-
-});
 /*
 |--------------------------------------------------------------------------
-| ADMIN ORDERS
+| HOMEPAGE (PUBLIC)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'admin'])->group(function () {
-
-    Route::get(
-        '/admin/orders',
-        [OrderController::class, 'index']
-    )->name('admin.orders.index');
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| HOMEPAGE
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/', function () {
-
-    return view('welcome');
-
-});
+Route::get('/', [DashboardController::class, 'welcome']);
 
 /*
 |--------------------------------------------------------------------------
@@ -60,53 +27,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function (Request $request) {
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN REDIRECT
-        |--------------------------------------------------------------------------
-        */
-
-        if (Auth::user()->role == 'admin') {
-
-            return redirect('/admin/dashboard');
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
-
-        $search = $request->search;
-
-        /*
-        |--------------------------------------------------------------------------
-        | PRODUCT QUERY
-        |--------------------------------------------------------------------------
-        */
-
-        $products = Product::query()
-
-            ->when($search, function ($query) use ($search) {
-
-                $query->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('category', 'like', '%' . $search . '%')
-                      ->orWhere('color', 'like', '%' . $search . '%');
-
-            })
-
-            ->latest()
-            ->get();
-
-        return view(
-            'dashboard',
-            compact('products')
-        );
-
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
 });
 
@@ -118,51 +40,24 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    Route::get('/admin/dashboard', function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL DATA
-        |--------------------------------------------------------------------------
-        */
+});
 
-        $totalProducts = Product::count();
+/*
+|--------------------------------------------------------------------------
+| ADMIN ORDERS
+|--------------------------------------------------------------------------
+*/
 
-        $totalUsers = User::count();
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
-        $totalStock = Product::sum('stock');
+    Route::get('/orders', [AdminOrderController::class, 'index'])
+        ->name('admin.orders.index');
 
-        $totalCategory = Product::distinct('category')
-            ->count('category');
-
-        /*
-        |--------------------------------------------------------------------------
-        | SALES
-        |--------------------------------------------------------------------------
-        */
-
-        $totalSold = Product::sum('sold');
-
-        /*
-        |--------------------------------------------------------------------------
-        | REVENUE
-        |--------------------------------------------------------------------------
-        */
-
-        $totalRevenue = Product::selectRaw(
-            'SUM(price * sold) as total'
-        )->value('total');
-
-        return view('admin.dashboard', compact(
-            'totalProducts',
-            'totalUsers',
-            'totalStock',
-            'totalCategory',
-            'totalSold',
-            'totalRevenue'
-        ));
-
-    })->name('admin.dashboard');
+    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
+        ->name('admin.orders.status');
 
 });
 
@@ -174,41 +69,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    // PRODUCT LIST
-    Route::get(
-        '/admin/products',
-        [ProductController::class, 'index']
-    )->name('admin.products.index');
+    Route::get('/admin/products', [ProductController::class, 'index'])
+        ->name('admin.products.index');
 
-    // CREATE FORM
-    Route::get(
-        '/admin/products/create',
-        [ProductController::class, 'create']
-    )->name('admin.products.create');
+    Route::get('/admin/products/create', [ProductController::class, 'create'])
+        ->name('admin.products.create');
 
-    // STORE PRODUCT
-    Route::post(
-        '/admin/products/store',
-        [ProductController::class, 'store']
-    )->name('admin.products.store');
+    Route::post('/admin/products/store', [ProductController::class, 'store'])
+        ->name('admin.products.store');
 
-    // EDIT PRODUCT
-    Route::get(
-        '/admin/products/{id}/edit',
-        [ProductController::class, 'edit']
-    )->name('admin.products.edit');
+    Route::get('/admin/products/{id}/edit', [ProductController::class, 'edit'])
+        ->name('admin.products.edit');
 
-    // UPDATE PRODUCT
-    Route::put(
-        '/admin/products/{id}/update',
-        [ProductController::class, 'update']
-    )->name('admin.products.update');
+    Route::put('/admin/products/{id}/update', [ProductController::class, 'update'])
+        ->name('admin.products.update');
 
-    // DELETE PRODUCT
-    Route::delete(
-        '/admin/products/{id}/delete',
-        [ProductController::class, 'destroy']
-    )->name('admin.products.destroy');
+    Route::delete('/admin/products/{id}/delete', [ProductController::class, 'destroy'])
+        ->name('admin.products.destroy');
 
 });
 
@@ -220,33 +97,25 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get(
-        '/profile',
-        [ProfileController::class, 'edit']
-    )->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
 
-    Route::patch(
-        '/profile',
-        [ProfileController::class, 'update']
-    )->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
 
-    Route::delete(
-        '/profile',
-        [ProfileController::class, 'destroy']
-    )->name('profile.destroy');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 
 });
 
 /*
 |--------------------------------------------------------------------------
-| PRODUCT DETAIL
+| PRODUCT DETAIL (PUBLIC)
 |--------------------------------------------------------------------------
 */
 
-Route::get(
-    '/products/{id}',
-    [UserProductController::class, 'show']
-)->name('products.show');
+Route::get('/products/{id}', [UserProductController::class, 'show'])
+    ->name('products.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -256,41 +125,33 @@ Route::get(
 
 Route::middleware(['auth'])->group(function () {
 
-    // CART PAGE
-    Route::get(
-        '/cart',
-        [CartController::class, 'index']
-    )->name('cart.index');
+    Route::get('/cart', [CartController::class, 'index'])
+        ->name('cart.index');
 
-    // ADD TO CART
-    Route::post(
-        '/cart',
-        [CartController::class, 'store']
-    )->name('cart.store');
+    Route::post('/cart', [CartController::class, 'store'])
+        ->name('cart.store');
 
-    // DELETE CART ITEM
-    Route::delete(
-        '/cart/{key}',
-        [CartController::class, 'destroy']
-    )->name('cart.destroy');
+    Route::delete('/cart/{key}', [CartController::class, 'destroy'])
+        ->name('cart.destroy');
 
-    // CHECKOUT PAGE
-    Route::post(
-        '/checkout',
-        [CartController::class, 'checkout']
-    )->name('checkout');
+});
 
-    // DIRECT BUY NOW
-    Route::post(
-        '/checkout/direct',
-        [CartController::class, 'directCheckout']
-    )->name('checkout.direct');
+/*
+|--------------------------------------------------------------------------
+| CHECKOUT ROUTES
+|--------------------------------------------------------------------------
+*/
 
-    // PROCESS CHECKOUT
-    Route::post(
-        '/checkout/process',
-        [CartController::class, 'processCheckout']
-    )->name('checkout.process');
+Route::middleware(['auth'])->group(function () {
+
+    Route::post('/checkout', [CartController::class, 'checkout'])
+        ->name('checkout');
+
+    Route::match(['get', 'post'], '/checkout/direct', [CartController::class, 'directCheckout'])
+        ->name('checkout.direct');
+
+    Route::post('/checkout/process', [CartController::class, 'processCheckout'])
+        ->name('checkout.process');
 
 });
 
@@ -302,23 +163,14 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    // FAVORITE PAGE
-    Route::get(
-        '/favorite',
-        [FavoriteController::class, 'index']
-    )->name('favorite.index');
+    Route::get('/favorite', [FavoriteController::class, 'index'])
+        ->name('favorite.index');
 
-    // ADD FAVORITE
-    Route::post(
-        '/favorite',
-        [FavoriteController::class, 'store']
-    )->name('favorite.store');
+    Route::post('/favorite', [FavoriteController::class, 'store'])
+        ->name('favorite.store');
 
-    // DELETE FAVORITE
-    Route::delete(
-        '/favorite/{key}',
-        [FavoriteController::class, 'destroy']
-    )->name('favorite.destroy');
+    Route::delete('/favorite/{key}', [FavoriteController::class, 'destroy'])
+        ->name('favorite.destroy');
 
 });
 
@@ -330,17 +182,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get(
-        '/my-orders',
-        [CartController::class, 'orders']
-    )->name('my.orders');
+    Route::get('/my-orders', [CartController::class, 'orders'])
+        ->name('my.orders');
 
 });
-
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTES
-|--------------------------------------------------------------------------
-*/
 
 require __DIR__.'/auth.php';

@@ -49,9 +49,7 @@
                         <img
                             src="{{ asset('images/logo.png') }}"
                             alt="Abaya Fishamo"
-                            class="w-14 h-20
-                                   object-cover
-                                   rounded-full">
+                            class="w-14 h-20 object-cover rounded-full">
 
                         <div>
 
@@ -88,48 +86,35 @@
                 <div class="flex items-center gap-4">
 
                     <!-- FAVORITE -->
-                   <a href="/favorite"
-   class="w-12 h-12 md:w-12 md:h-12
-          rounded-full
-          bg-gradient-to-br
-          from-[#dfe6da]
-          to-[#cfd7c8]
-          flex items-center justify-center
-          text-[#55624d]
-          shadow-md
-          hover:scale-105 transition">
+                    <a href="/favorite"
+                       class="w-12 h-12
+                              rounded-full
+                              bg-gradient-to-br
+                              from-[#dfe6da]
+                              to-[#cfd7c8]
+                              flex items-center justify-center
+                              text-[#55624d]
+                              shadow-md
+                              hover:scale-105 transition">
 
-    <i class="bi bi-box2-heart-fill"></i>
+                        <i class="bi bi-box2-heart-fill"></i>
 
-</a>
+                    </a>
 
                     <!-- CART -->
                     <a href="/cart"
-   class="relative
-          w-12 h-12 md:w-12 md:h-12
-          rounded-full
-          bg-gradient-to-br
-          from-[#66725d]
-          to-[#4e5b46]
-          flex items-center justify-center
-          text-white
-          shadow-lg
-          hover:scale-105 transition">
+                       class="relative
+                              w-12 h-12
+                              rounded-full
+                              bg-gradient-to-br
+                              from-[#66725d]
+                              to-[#4e5b46]
+                              flex items-center justify-center
+                              text-white
+                              shadow-lg
+                              hover:scale-105 transition">
 
-    <i class="bi bi-cart-plus-fill"></i>
-                        @if(session('cart'))
-
-                            <span class="absolute -top-1 -right-1
-                                         bg-black text-white
-                                         text-xs font-bold
-                                         w-6 h-6 rounded-full
-                                         flex items-center justify-center">
-
-                                {{ count(session('cart')) }}
-
-                            </span>
-
-                        @endif
+                        <i class="bi bi-cart-plus-fill"></i>
 
                     </a>
 
@@ -252,7 +237,7 @@
                         </div>
 
                         <!-- FORM -->
-                        <form action="/cart" method="POST">
+                        <form method="POST">
 
                             @csrf
 
@@ -456,8 +441,10 @@
                             <!-- BUTTON -->
                             <div class="mt-14 flex flex-wrap gap-5">
 
-                                <!-- CART -->
+                                <!-- ADD TO CART -->
                                 <button type="submit"
+                                        formaction="/cart"
+                                        formmethod="POST"
                                         class="bg-[#55624d]
                                                hover:bg-[#40483a]
                                                text-white
@@ -472,11 +459,12 @@
 
                                 </button>
 
-                                <!-- BUY -->
+                                <!-- BUY NOW -->
                                 <button type="submit"
-                                        formaction="/checkout/direct"
-                                        class="bg-[#2d312b]
-                                               hover:bg-black
+                                        formaction="{{ route('checkout.direct') }}"
+                                        formmethod="POST"
+                                        class="bg-black
+                                               hover:bg-gray-800
                                                text-white
                                                px-10 py-5
                                                rounded-2xl

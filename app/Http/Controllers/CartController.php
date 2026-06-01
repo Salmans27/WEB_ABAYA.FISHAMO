@@ -9,9 +9,13 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\OrderItem;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class CartController extends Controller
 {
+
+
     /*
     |--------------------------------------------------------------------------
     | CART PAGE
@@ -61,7 +65,7 @@ class CartController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CEK PRODUK SUDAH ADA ATAU BELUM
+        | CEK CART
         |--------------------------------------------------------------------------
         */
 
@@ -97,7 +101,7 @@ class CartController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | CREATE CART BARU
+            | CREATE CART
             |--------------------------------------------------------------------------
             */
 
@@ -118,7 +122,7 @@ class CartController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | DELETE CART ITEM
+    | DELETE CART
     |--------------------------------------------------------------------------
     */
 
@@ -137,7 +141,7 @@ class CartController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | CHECKOUT PAGE
+    | CHECKOUT CART
     |--------------------------------------------------------------------------
     */
 
@@ -198,12 +202,35 @@ class CartController extends Controller
 
     public function directCheckout(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | BLOCK GET REQUEST
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->isMethod('get')) {
+
+            return redirect('/dashboard');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
+
         $request->validate([
             'product_id' => 'required',
             'size'       => 'required',
             'color'      => 'required',
             'quantity'   => 'required|integer|min:1',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUCT
+        |--------------------------------------------------------------------------
+        */
 
         $product = Product::findOrFail($request->product_id);
 
@@ -221,6 +248,12 @@ class CartController extends Controller
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | CHECKOUT ITEM
+        |--------------------------------------------------------------------------
+        */
+
         $checkoutItems = collect([
             (object)[
                 'id'       => 0,
@@ -231,15 +264,30 @@ class CartController extends Controller
             ]
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL
+        |--------------------------------------------------------------------------
+        */
+
         $total = $product->price * $request->quantity;
 
-        $selectedItems = [];
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
 
-        return view('checkout.index', compact(
-            'checkoutItems',
-            'selectedItems',
-            'total'
-        ));
+        return view('checkout.index', [
+            'checkoutItems' => $checkoutItems,
+            'selectedItems' => [],
+            'total'         => $total,
+            'buyNow'        => true,
+            'product_id'    => $product->id,
+            'size'          => $request->size,
+            'color'         => $request->color,
+            'quantity'      => $request->quantity,
+        ]);
     }
 
     /*
@@ -256,88 +304,34 @@ class CartController extends Controller
             'payment_method' => 'required',
         ]);
 
-        $selectedItems = $request->selected_items ?? [];
-
-        $cartItems = Cart::with('product')
-            ->where('user_id', Auth::id())
-            ->whereIn('id', $selectedItems)
-            ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI CART
-        |--------------------------------------------------------------------------
-        */
-
-        if ($cartItems->count() == 0) {
-
-            return back()->with(
-                'error',
-                'Tidak ada produk dipilih'
-            );
-        }
-
         $totalPrice = 0;
         $totalItem  = 0;
 
         /*
         |--------------------------------------------------------------------------
-        | LOOP CART
+        | BUY NOW
         |--------------------------------------------------------------------------
         */
 
-        foreach ($cartItems as $item) {
+    if ($request->has('buy_now')) {
 
-            $product = $item->product;
+        $product = Product::findOrFail($request->product_id);
 
-            if (!$product) {
-                continue;
-            }
+        if ($product->stock < $request->quantity) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | VALIDASI STOCK
-            |--------------------------------------------------------------------------
-            */
-
-            if ($product->stock < $item->quantity) {
-
-                return back()->with(
-                    'error',
-                    'Stock produk tidak mencukupi'
-                );
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE PRODUCT
-            |--------------------------------------------------------------------------
-            */
-
-            $product->stock -= $item->quantity;
-            $product->sold  += $item->quantity;
-
-            $product->save();
-
-            /*
-            |--------------------------------------------------------------------------
-            | TOTAL
-            |--------------------------------------------------------------------------
-            */
-
-            $totalPrice += (
-                $product->price *
-                $item->quantity
+            return back()->with(
+                'error',
+                'Stock tidak mencukupi'
             );
-
-            $totalItem += $item->quantity;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE ORDER
-        |--------------------------------------------------------------------------
-        */
+        $totalPrice = $product->price * $request->quantity;
+        $totalItem  = $request->quantity;
+
+        $product->stock -= $request->quantity;
+        $product->sold  += $request->quantity;
+
+        $product->save();
 
         $order = Order::create([
             'customer_name' => Auth::user()->name,
@@ -345,47 +339,218 @@ class CartController extends Controller
             'address'       => $request->address,
             'total_price'   => $totalPrice,
             'total_item'    => $totalItem,
+            'status'        => 'pending',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN ORDER ITEMS
-        |--------------------------------------------------------------------------
-        */
+        OrderItem::create([
+            'order_id'   => $order->id,
+            'product_id' => $product->id,
+            'size'       => $request->size,
+            'color'      => $request->color,
+            'quantity'   => $request->quantity,
+            'price'      => $product->price,
+        ]);
 
-        foreach ($cartItems as $item) {
+        return redirect('/my-orders')->with(
+            'success',
+            'Checkout berhasil!'
+        );
 
-            if (!$item->product) {
-                continue;
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI STOCK
+            |--------------------------------------------------------------------------
+            */
+
+            if ($product->stock < $request->quantity) {
+
+                return back()->with(
+                    'error',
+                    'Stock tidak mencukupi'
+                );
             }
 
-            OrderItem::create([
+            /*
+            |--------------------------------------------------------------------------
+            | TOTAL
+            |--------------------------------------------------------------------------
+            */
 
-                'order_id'   => $order->id,
+            $totalPrice = $product->price * $request->quantity;
+            $totalItem  = $request->quantity;
 
-                'product_id' => $item->product->id,
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE PRODUCT
+            |--------------------------------------------------------------------------
+            */
 
-                'size'       => $item->size,
+            $product->stock -= $request->quantity;
+            $product->sold  += $request->quantity;
 
-                'color'      => $item->color,
+            $product->save();
 
-                'quantity'   => $item->quantity,
+            /*
+            |--------------------------------------------------------------------------
+            | CREATE ORDER
+            |--------------------------------------------------------------------------
+            */
 
-                'price'      => $item->product->price,
+            $order = Order::create([
+                'customer_name' => Auth::user()->name,
+                'phone'         => $request->phone,
+                'address'       => $request->address,
+                'total_price'   => $totalPrice,
+                'total_item'    => $totalItem,
+                'status'        => 'pending',
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | ORDER ITEM
+            |--------------------------------------------------------------------------
+            */
+
+            OrderItem::create([
+                'order_id'   => $order->id,
+                'product_id' => $product->id,
+                'size'       => $request->size,
+                'color'      => $request->color,
+                'quantity'   => $request->quantity,
+                'price'      => $product->price,
+            ]);
+
+        } else {
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHECKOUT CART
+            |--------------------------------------------------------------------------
+            */
+
+            $selectedItems = $request->selected_items ?? [];
+
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->whereIn('id', $selectedItems)
+                ->get();
+
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI CART
+            |--------------------------------------------------------------------------
+            */
+
+            if ($cartItems->count() == 0) {
+
+                return back()->with(
+                    'error',
+                    'Tidak ada produk dipilih'
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOOP CART
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($cartItems as $item) {
+
+                $product = $item->product;
+
+                if (!$product) {
+                    continue;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | VALIDASI STOCK
+                |--------------------------------------------------------------------------
+                */
+
+                if ($product->stock < $item->quantity) {
+
+                    return back()->with(
+                        'error',
+                        'Stock produk tidak mencukupi'
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | UPDATE PRODUCT
+                |--------------------------------------------------------------------------
+                */
+
+                $product->stock -= $item->quantity;
+                $product->sold  += $item->quantity;
+
+                $product->save();
+
+                /*
+                |--------------------------------------------------------------------------
+                | TOTAL
+                |--------------------------------------------------------------------------
+                */
+
+                $totalPrice += (
+                    $product->price *
+                    $item->quantity
+                );
+
+                $totalItem += $item->quantity;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | CREATE ORDER
+            |--------------------------------------------------------------------------
+            */
+
+            $order = Order::create([
+                'customer_name' => Auth::user()->name,
+                'phone'         => $request->phone,
+                'address'       => $request->address,
+                'total_price'   => $totalPrice,
+                'total_item'    => $totalItem,
+                'status'        => 'pending',
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | ORDER ITEMS
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($cartItems as $item) {
+
+                if (!$item->product) {
+                    continue;
+                }
+
+                OrderItem::create([
+                    'order_id'   => $order->id,
+                    'product_id' => $item->product->id,
+                    'size'       => $item->size,
+                    'color'      => $item->color,
+                    'quantity'   => $item->quantity,
+                    'price'      => $item->product->price,
+                ]);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE CART
+            |--------------------------------------------------------------------------
+            */
+
+            Cart::where('user_id', Auth::id())
+                ->whereIn('id', $selectedItems)
+                ->delete();
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DELETE CART
-        |--------------------------------------------------------------------------
-        */
-
-        Cart::where('user_id', Auth::id())
-            ->whereIn('id', $selectedItems)
-            ->delete();
-
-        return redirect('/dashboard')->with(
+        return redirect('/my-orders')->with(
             'success',
             'Checkout berhasil!'
         );
@@ -393,7 +558,7 @@ class CartController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | PESANAN SAYA
+    | MY ORDERS
     |--------------------------------------------------------------------------
     */
 
@@ -406,4 +571,4 @@ class CartController extends Controller
 
         return view('orders.index', compact('orders'));
     }
-}
+} 
