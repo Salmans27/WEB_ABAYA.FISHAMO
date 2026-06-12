@@ -15,14 +15,22 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
 
-        .nav-link-active {
-            border-bottom: 2px solid #55624d;
+        /* Hide scrollbar for category pills but keep functionality */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
 
-<body class="bg-[#edf1eb] text-[#2f312e] overflow-x-hidden">
+<body class="bg-[#edf1eb] text-[#2f312e] overflow-x-hidden font-sans antialiased selection:bg-[#55624d] selection:text-white">
 
 @php
     use App\Models\Cart;
@@ -30,263 +38,115 @@
 @endphp
 
 {{-- TOP BAR --}}
-<div class="bg-gradient-to-r from-[#55624d] via-[#7b8870] to-[#55624d]
-            text-white text-center py-3 text-[10px] md:text-sm tracking-[4px]">
-
-    @yield('topbar_text', 'LUXURY MODEST FASHION • ABAYA FISHAMO')
-
+<div class="bg-gradient-to-r from-[#55624d] via-[#7b8870] to-[#55624d] text-white text-center py-2 md:py-3 text-[8px] sm:text-[10px] md:text-sm tracking-[2px] sm:tracking-[4px] px-4">
+    @yield('topbar_text', 'LUXURY MODEST FASHION • FREE SHIPPING ACROSS INDONESIA')
 </div>
 
-{{-- NAVBAR --}}
+{{-- NAVBAR (LUXURY LAYOUT: Links Left, Logo Center, Icons Right) --}}
 <nav id="mainNav"
-     class="sticky top-0 z-50 bg-[#edf1eb]/95 backdrop-blur-md border-b border-[#d8ddd3] shadow-sm transition-shadow duration-300">
+     class="sticky top-0 z-50 bg-[#edf1eb]/95 backdrop-blur-md border-b border-[#d8ddd3] shadow-sm transition-all duration-300">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-12">
 
-        <div class="flex items-center justify-between h-20 md:h-24">
+        <div class="flex items-center justify-between h-16 sm:h-20 md:h-24 relative">
 
-            {{-- LEFT MENU --}}
-            <div class="hidden lg:flex items-center gap-8">
+            {{-- LEFT: NAVIGATION LINKS & HAMBURGER --}}
+            <div class="flex-1 flex items-center">
+                
+                {{-- MOBILE HAMBURGER --}}
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-2xl text-[#2d312b] hover:text-[#55624d] transition-colors mr-4">
+                    <i class="bi bi-list"></i>
+                </button>
 
-                <a href="{{ route('dashboard') }}"
-                   class="text-[#4d5449] hover:text-[#2d312b] transition font-medium
-                          @yield('nav_allproducts')">
-
-                    All Products
-
-                </a>
-
-                <a href="#"
-                   class="text-[#4d5449] hover:text-[#2d312b] transition">
-                    New Arrivals
-                </a>
-
-                <a href="#"
-                   class="text-[#4d5449] hover:text-[#2d312b] transition">
-                    Best Seller
-                </a>
-
+                {{-- DESKTOP LINKS --}}
+                <div class="hidden lg:flex items-center gap-8 text-[11px] font-semibold tracking-[2px] uppercase">
+                    <a href="{{ route('dashboard') }}" class="text-[#2d312b] hover:text-[#7b8870] transition-colors @yield('nav_allproducts')">
+                        Boutique
+                    </a>
+                    <a href="#new-arrivals" class="text-[#2d312b] hover:text-[#7b8870] transition-colors">
+                        New Arrivals
+                    </a>
+                    <a href="#best-sellers" class="text-[#2d312b] hover:text-[#7b8870] transition-colors">
+                        Best Sellers
+                    </a>
+                </div>
             </div>
 
-            {{-- MOBILE HAMBURGER --}}
-            <button onclick="toggleMobileMenu()"
-                    class="lg:hidden text-3xl text-[#4b5446]">
-                <i class="bi bi-list-stars"></i>
-            </button>
-
-            {{-- CENTER LOGO --}}
-            <a href="{{ route('dashboard') }}" class="text-center">
-
-                <h1 class="text-2xl md:text-4xl
-                           tracking-[6px] md:tracking-[10px]
-                           font-extralight
-                           leading-none
-                           text-[#252825]">
+            {{-- CENTER: LOGO --}}
+            <a href="{{ route('dashboard') }}" class="flex-shrink-0 text-center flex flex-col items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none sm:pointer-events-auto">
+                <h1 class="text-base sm:text-2xl md:text-[34px] tracking-[3px] sm:tracking-[6px] md:tracking-[10px] font-extralight text-[#1a1a1a] uppercase leading-none pointer-events-auto">
                     ABAYA
                 </h1>
-
-                <p class="text-[10px] md:text-xs
-                          tracking-[5px]
-                          text-[#6d7568]
-                          mt-1">
+                <p class="text-[6px] sm:text-[9px] md:text-[10px] tracking-[3px] sm:tracking-[8px] text-[#55624d] mt-1 sm:mt-2 ml-1 sm:ml-2 uppercase font-medium pointer-events-auto">
                     FISHAMO
                 </p>
-
             </a>
 
-            {{-- RIGHT ICONS --}}
-            <div class="flex items-center gap-3 md:gap-5">
+            {{-- RIGHT: ICONS --}}
+            <div class="flex-1 flex items-center justify-end gap-2 sm:gap-5 md:gap-6 relative z-20">
 
                 @auth
+                {{-- SEARCH ICON --}}
+                <button onclick="toggleSearch()" class="text-lg sm:text-xl text-[#2d312b] hover:text-[#7b8870] transition-colors">
+                    <i class="bi bi-search"></i>
+                </button>
 
-                {{-- SEARCH --}}
-                <div class="relative" id="searchWrapper">
-
-                    <button id="searchToggle"
-                            class="w-11 h-11 rounded-full
-                                   bg-gradient-to-br from-[#dfe6da] to-[#cfd7c8]
-                                   flex items-center justify-center
-                                   text-[#55624d] shadow-md
-                                   hover:scale-105 transition">
-                        <i class="bi bi-search"></i>
-                    </button>
-
-                    <div id="searchBox"
-                         class="hidden absolute right-0 top-14 w-[300px] z-50">
-
-                        <form action="{{ route('dashboard') }}" method="GET">
-                            <div class="relative">
-                                <input type="text"
-                                       name="search"
-                                       value="{{ request('search') }}"
-                                       placeholder="Cari produk..."
-                                       class="w-full bg-white border border-[#d7ddd2]
-                                              rounded-2xl py-4 pl-5 pr-12 shadow-xl
-                                              focus:outline-none focus:ring-2 focus:ring-[#55624d]">
-                                <button type="submit"
-                                        class="absolute right-4 top-1/2 -translate-y-1/2">
-                                    <i class="bi bi-search text-[#55624d]"></i>
-                                </button>
-                            </div>
-                        </form>
-
-                    </div>
-
-                </div>
-
-                {{-- FAVORITE --}}
-                <a href="{{ route('favorite.index') }}"
-                   class="w-11 h-11 rounded-full
-                          bg-gradient-to-br from-[#dfe6da] to-[#cfd7c8]
-                          flex items-center justify-center
-                          text-[#55624d] shadow-md
-                          hover:scale-105 transition"
-                   title="Favorit">
-                    <i class="bi bi-box2-heart-fill"></i>
-                </a>
-
-                {{-- CART --}}
-                <a href="{{ route('cart.index') }}"
-                   class="relative w-11 h-11 rounded-full
-                          bg-gradient-to-br from-[#66725d] to-[#4e5b46]
-                          flex items-center justify-center
-                          text-white shadow-lg
-                          hover:scale-105 transition"
-                   title="Keranjang">
-
-                    <i class="bi bi-handbag-fill"></i>
-
-                    @if($cartCount > 0)
-                        <span class="absolute -top-1 -right-1
-                                     bg-[#cfd7c8] text-[#55624d]
-                                     text-[10px] w-5 h-5 rounded-full
-                                     flex items-center justify-center font-semibold">
-                            {{ $cartCount }}
-                        </span>
-                    @endif
-
+                {{-- FAVORITE ICON --}}
+                <a href="{{ route('favorite.index') }}" class="text-lg sm:text-xl text-[#2d312b] hover:text-[#7b8870] transition-colors hidden sm:block">
+                    <i class="bi bi-heart"></i>
                 </a>
 
                 {{-- PROFILE DROPDOWN --}}
                 <div class="relative" id="profileWrapper">
-
-                    <button onclick="toggleProfileMenu()"
-                            class="flex items-center gap-2
-                                   bg-white/80 hover:bg-white
-                                   px-3 py-2 rounded-full
-                                   border border-[#d7ddd2] shadow-sm transition">
-
-                        <img src="{{ asset('storage/' . auth()->user()->photo) }}"
-                             alt="Profile"
-                             class="w-9 h-9 rounded-full object-cover"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=66725d&color=fff'">
-
-                        <div class="hidden md:block text-left">
-                            <p class="text-[10px] text-gray-400">Welcome</p>
-                            <p class="font-semibold text-xs text-[#2f312e]">{{ Auth::user()->name }}</p>
-                        </div>
-
-                        <i class="bi bi-chevron-down text-xs text-gray-400"></i>
-
+                    <button onclick="toggleProfileMenu()" class="text-lg sm:text-xl text-[#2d312b] hover:text-[#7b8870] transition-colors flex items-center gap-2">
+                        <i class="bi bi-person"></i>
                     </button>
 
                     {{-- DROPDOWN --}}
-                    <div id="profileMenu"
-                         class="hidden absolute right-0 mt-3 w-56 bg-white
-                                rounded-2xl shadow-2xl border border-[#dde3d8] overflow-hidden z-50">
-
-                        <div class="px-4 py-4 bg-gradient-to-r from-[#66725d] to-[#87927d] text-white">
-                            <p class="font-semibold text-sm">{{ Auth::user()->name }}</p>
-                            <p class="text-xs opacity-75 break-all mt-0.5">{{ Auth::user()->email }}</p>
-                        </div>
-
-                        <div class="py-1">
-
-                            <a href="{{ route('profile.edit') }}"
-                               class="flex items-center gap-3 px-4 py-3 text-sm
-                                      hover:bg-[#edf1eb] transition">
-                                <i class="bi bi-person text-[#55624d]"></i>
-                                Profile Saya
-                            </a>
-
-                            <a href="{{ route('my.orders') }}"
-                               class="flex items-center gap-3 px-4 py-3 text-sm
-                                      hover:bg-[#edf1eb] transition">
-                                <i class="bi bi-bag-check text-[#55624d]"></i>
-                                Pesanan Saya
-                            </a>
-
-                            <a href="{{ route('favorite.index') }}"
-                               class="flex items-center gap-3 px-4 py-3 text-sm
-                                      hover:bg-[#edf1eb] transition">
-                                <i class="bi bi-heart text-[#55624d]"></i>
-                                Favorit Saya
-                            </a>
-
-                            <div class="border-t border-gray-100 mt-1 pt-1">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit"
-                                            class="w-full flex items-center gap-3 px-4 py-3 text-sm
-                                                   text-red-500 hover:bg-red-50 transition">
-                                        <i class="bi bi-box-arrow-right"></i>
-                                        Logout
-                                    </button>
-                                </form>
+                    <div id="profileMenu" class="hidden absolute right-[-20px] sm:right-0 mt-5 w-56 sm:w-64 bg-white border border-gray-100 shadow-2xl z-50 p-6">
+                        <div class="mb-6 pb-6 border-b border-gray-100 text-center">
+                            <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border border-gray-100">
+                                <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Profile" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=55624d&color=fff'">
                             </div>
-
+                            <p class="font-medium text-sm text-[#1a1a1a]">{{ Auth::user()->name }}</p>
+                            <p class="text-[11px] text-gray-500 mt-1">{{ Auth::user()->email }}</p>
                         </div>
-
+                        <div class="space-y-4">
+                            <a href="{{ route('profile.edit') }}" class="block text-xs uppercase tracking-[1px] text-[#55624d] hover:text-black transition-colors"><i class="bi bi-person-gear mr-3"></i> Profile Saya</a>
+                            <a href="{{ route('my.orders') }}" class="block text-xs uppercase tracking-[1px] text-[#55624d] hover:text-black transition-colors"><i class="bi bi-bag-check mr-3"></i> Pesanan Saya</a>
+                            <a href="{{ route('favorite.index') }}" class="block text-xs uppercase tracking-[1px] text-[#55624d] hover:text-black transition-colors"><i class="bi bi-heart mr-3"></i> Favorit Saya</a>
+                            
+                            <form method="POST" action="{{ route('logout') }}" class="pt-4 mt-4 border-t border-gray-100">
+                                @csrf
+                                <button type="submit" class="w-full text-left text-xs uppercase tracking-[1px] text-red-500 hover:text-red-700 transition-colors">
+                                    <i class="bi bi-box-arrow-right mr-3"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
-
                 </div>
 
-                @else
+                {{-- CART ICON --}}
+                <a href="{{ route('cart.index') }}" class="relative text-lg sm:text-xl text-[#2d312b] hover:text-[#7b8870] transition-colors">
+                    <i class="bi bi-bag"></i>
+                    @if($cartCount > 0)
+                        <span class="absolute -top-2 -right-2 bg-[#55624d] text-white text-[8px] sm:text-[9px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-bold">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
 
-                {{-- GUEST BUTTONS --}}
-                <a href="{{ route('login') }}"
-                   class="px-5 py-2 rounded-full border border-[#55624d]
-                          text-[#55624d] hover:bg-[#55624d] hover:text-white transition text-sm">
+                @else
+                
+                {{-- GUEST --}}
+                <a href="{{ route('login') }}" class="text-[10px] md:text-xs font-semibold uppercase tracking-[2px] text-[#2d312b] hover:text-[#7b8870] transition-colors">
                     Login
                 </a>
-
-                <a href="{{ route('register') }}"
-                   class="px-5 py-2 rounded-full bg-[#55624d]
-                          text-white hover:bg-[#66725d] hover:scale-105 transition text-sm shadow-md">
+                <span class="text-gray-300">|</span>
+                <a href="{{ route('register') }}" class="text-[10px] md:text-xs font-semibold uppercase tracking-[2px] text-[#2d312b] hover:text-[#7b8870] transition-colors">
                     Register
                 </a>
-
-                @endauth
-
-            </div>
-
-        </div>
-
-        {{-- MOBILE MENU --}}
-        <div id="mobileMenu" class="hidden lg:hidden pb-5 border-t border-[#d8ddd3] mt-1">
-
-            <div class="flex flex-col gap-3 pt-4">
-
-                <a href="{{ route('dashboard') }}" class="text-[#444] font-medium py-1">
-                    All Products
-                </a>
-
-                <a href="#" class="text-[#444] font-medium py-1">New Arrivals</a>
-
-                <a href="#" class="text-[#444] font-medium py-1">Best Seller</a>
-
-                @auth
-                    <a href="{{ route('my.orders') }}" class="text-[#444] font-medium py-1">
-                        Pesanan Saya
-                    </a>
-                    <a href="{{ route('cart.index') }}" class="text-[#444] font-medium py-1">
-                        Keranjang
-                        @if($cartCount > 0)
-                            <span class="ml-1 bg-[#55624d] text-white text-xs px-2 py-0.5 rounded-full">
-                                {{ $cartCount }}
-                            </span>
-                        @endif
-                    </a>
+                
                 @endauth
 
             </div>
@@ -295,112 +155,167 @@
 
     </div>
 
+    {{-- SEARCH DROPDOWN (Centered) --}}
+    <div id="searchOverlay" class="hidden absolute top-[100%] left-1/2 -translate-x-1/2 w-[95%] sm:w-[90%] md:w-[500px] bg-white border-x border-b border-[#d8ddd3] rounded-b-2xl shadow-xl z-[60] p-3 sm:p-5 transition-all duration-300">
+        <form action="{{ route('dashboard') }}" method="GET" class="relative flex items-center">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari produk..." 
+                   class="w-full bg-[#edf1eb] border-none text-sm text-[#2d312b] rounded-full py-3 px-5 pr-12 focus:ring-1 focus:ring-[#55624d] placeholder-gray-400 transition-colors" autofocus id="searchInput">
+            <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-lg text-[#55624d] w-10 h-10 flex items-center justify-center hover:bg-[#d8ddd3] rounded-full transition-colors">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
+
 </nav>
 
+    {{-- MOBILE MENU SLIDEOUT --}}
+    <div id="mobileMenu" class="fixed inset-y-0 left-0 w-[85%] sm:w-[350px] bg-white shadow-[20px_0_50px_rgba(0,0,0,0.1)] z-[60] transform -translate-x-full transition-transform duration-500 flex flex-col">
+        
+        {{-- HEADER --}}
+        <div class="px-6 py-5 border-b border-[#ecefea] flex justify-between items-center bg-white">
+            <h2 class="text-xs tracking-[4px] uppercase font-bold text-[#55624d]">Menu</h2>
+            <button onclick="toggleMobileMenu()" class="text-2xl text-gray-400 hover:text-black transition-colors">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto bg-white pb-10">
+            
+            {{-- PROFILE SECTION --}}
+            @auth
+            <div class="p-6 border-b border-[#ecefea] bg-[#f8faf7] flex items-center gap-4">
+                <div class="w-14 h-14 rounded-full overflow-hidden border border-[#d8ddd3] shrink-0">
+                    <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Profile" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=55624d&color=fff'">
+                </div>
+                <div>
+                    <p class="font-bold text-[#2d312b] line-clamp-1">{{ Auth::user()->name }}</p>
+                    <p class="text-[10px] tracking-[1px] uppercase text-[#7b8870] mt-1">{{ Auth::user()->role === 'admin' ? 'Administrator' : 'Customer' }}</p>
+                </div>
+            </div>
+            @else
+            <div class="p-6 border-b border-[#ecefea] bg-[#f8faf7] text-center">
+                <p class="text-xs text-[#7b8870] mb-4">Selamat datang di Abaya Fishamo</p>
+                <div class="flex gap-3 justify-center">
+                    <a href="{{ route('login') }}" class="px-6 py-2.5 bg-[#55624d] text-white text-[10px] uppercase tracking-[2px] font-semibold rounded-full shadow-md hover:bg-[#40483a] transition">Login</a>
+                    <a href="{{ route('register') }}" class="px-6 py-2.5 border border-[#55624d] text-[#55624d] text-[10px] uppercase tracking-[2px] font-semibold rounded-full hover:bg-[#edf1eb] transition">Register</a>
+                </div>
+            </div>
+            @endauth
+
+            {{-- MAIN LINKS --}}
+            <div class="p-4 space-y-1">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-shop text-lg text-[#7b8870]"></i> Boutique
+                </a>
+                <a href="#new-arrivals" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-stars text-lg text-[#7b8870]"></i> New Arrivals
+                </a>
+                <a href="#best-sellers" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-award text-lg text-[#7b8870]"></i> Best Sellers
+                </a>
+            </div>
+            
+            {{-- ACCOUNT LINKS --}}
+            @auth
+            <div class="px-4 pb-4 border-b border-[#ecefea] space-y-1">
+                <p class="text-[10px] tracking-[2px] text-gray-400 uppercase font-bold mt-2 mb-3 px-4">My Account</p>
+                <a href="{{ route('cart.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-bag text-lg text-[#55624d]"></i> Keranjang Saya
+                </a>
+                <a href="{{ route('favorite.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-heart text-lg text-[#55624d]"></i> Favorit Saya
+                </a>
+                <a href="{{ route('my.orders') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-bag-check text-lg text-[#55624d]"></i> Pesanan Saya
+                </a>
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium text-[#2d312b] hover:bg-[#edf1eb] transition-colors">
+                    <i class="bi bi-person-gear text-lg text-[#55624d]"></i> Profil
+                </a>
+            </div>
+            
+            <div class="p-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex items-center w-full gap-4 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors">
+                        <i class="bi bi-box-arrow-right text-lg"></i> Logout
+                    </button>
+                </form>
+            </div>
+            @endauth
+            
+        </div>
+    </div>
+    
+    {{-- MOBILE MENU BACKDROP --}}
+    <div id="mobileBackdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 z-[55] opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
 {{-- PAGE CONTENT --}}
-<main>
+<main class="min-h-screen">
     @yield('content')
 </main>
 
-{{-- FOOTER --}}
-<footer class="bg-[#55624d] text-white pt-20 pb-10">
+{{-- FOOTER (HIGH-END MINIMALIST) --}}
+<footer class="bg-[#55624d] text-white border-t border-[#55624d] pt-12 md:pt-24 pb-8 md:pb-12">
 
-    <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
 
-        {{-- TOP --}}
-        <div class="grid md:grid-cols-3 gap-14 border-b border-white/10 pb-14">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 lg:gap-10 mb-12 md:mb-20">
 
             {{-- BRAND --}}
-            <div>
-
-                <h2 class="text-4xl tracking-[8px] font-extralight">ABAYA</h2>
-
-                <p class="tracking-[6px] text-sm mt-2 text-white/70">FISHAMO</p>
-
-                <p class="mt-6 text-white/70 leading-8">
-                    Luxury modest fashion collection
-                    crafted with elegance,
-                    beauty, and timeless design.
+            <div class="lg:col-span-1">
+                <h2 class="text-[28px] tracking-[8px] font-extralight text-white uppercase leading-none">ABAYA</h2>
+                <p class="text-[10px] tracking-[6px] text-white/70 mt-2 ml-1 uppercase font-medium">FISHAMO</p>
+                <p class="mt-8 text-sm text-white/70 leading-relaxed font-light">
+                    Redefining luxury modest fashion. Crafted with elegance, beauty, and timeless design for the modern woman.
                 </p>
-
             </div>
 
-            {{-- NAVIGATION --}}
+            {{-- BOUTIQUE --}}
             <div>
-
-                <h3 class="text-lg tracking-[2px] mb-6 font-light">Navigation</h3>
-
-                <div class="flex flex-col gap-4 text-white/70">
-
-                    <a href="{{ route('dashboard') }}" class="hover:text-white transition">Home</a>
-
-                    <a href="{{ route('dashboard') }}" class="hover:text-white transition">Collection</a>
-
-                    <a href="#" class="hover:text-white transition">About Us</a>
-
-                    <a href="https://wa.me/6283180065732" target="_blank"
-                       class="hover:text-white transition">Contact</a>
-
-                </div>
-
+                <h3 class="text-xs tracking-[3px] font-semibold text-white uppercase mb-8">Boutique</h3>
+                <ul class="space-y-4 text-sm font-light text-white/70">
+                    <li><a href="{{ route('dashboard') }}" class="hover:text-white transition-colors">Shop All Collection</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">New Arrivals</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Best Sellers</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Size Guide</a></li>
+                </ul>
             </div>
 
-            {{-- SOCIAL --}}
+            {{-- CUSTOMER CARE --}}
             <div>
+                <h3 class="text-xs tracking-[3px] font-semibold text-white uppercase mb-8">Customer Care</h3>
+                <ul class="space-y-4 text-sm font-light text-white/70">
+                    <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Shipping & Returns</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                </ul>
+            </div>
 
-                <h3 class="text-lg tracking-[2px] mb-6 font-light">Follow Us</h3>
-
-                <div class="flex flex-col gap-5 text-white/70">
-
-                    <a href="https://www.instagram.com/abaya.fishamo"
-                       target="_blank"
-                       class="flex items-center gap-3 hover:text-white transition">
-                        <i class="bi bi-instagram text-xl"></i>
-                        Instagram
+            {{-- CONNECT --}}
+            <div>
+                <h3 class="text-xs tracking-[3px] font-semibold text-white uppercase mb-8">Connect With Us</h3>
+                <div class="flex gap-5">
+                    <a href="https://www.instagram.com/abaya.fishamo" target="_blank" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:bg-white hover:text-[#55624d] hover:border-white transition-all">
+                        <i class="bi bi-instagram"></i>
                     </a>
-
-                    <a href="https://wa.me/6283180065732"
-                       target="_blank"
-                       class="flex items-center gap-3 hover:text-white transition">
-                        <i class="bi bi-whatsapp text-xl"></i>
-                        WhatsApp
+                    <a href="https://wa.me/6283180065732" target="_blank" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:bg-white hover:text-[#55624d] hover:border-white transition-all">
+                        <i class="bi bi-whatsapp"></i>
                     </a>
-
-                    <a href="https://www.tiktok.com/@abaya.fishamo"
-                       target="_blank"
-                       class="flex items-center gap-3 hover:text-white transition">
-                        <i class="bi bi-tiktok text-xl"></i>
-                        TikTok
+                    <a href="https://www.tiktok.com/@abaya.fishamo" target="_blank" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:bg-white hover:text-[#55624d] hover:border-white transition-all">
+                        <i class="bi bi-tiktok"></i>
                     </a>
-
-                    <a href="https://shopee.co.id/abaya.fishamo"
-                       target="_blank"
-                       class="flex items-center gap-3 hover:text-white transition">
-                        <i class="bi bi-bag-heart text-xl"></i>
-                        Shopee
-                    </a>
-
-                    <a href="https://tk.tokopedia.com/ZSx5A4B6h/"
-                       target="_blank"
-                       class="flex items-center gap-3 hover:text-white transition">
-                        <i class="bi bi-shop text-xl"></i>
-                        Tokopedia
-                    </a>
-
                 </div>
-
+                <p class="text-xs text-white/70 font-light mt-6">Email: hello@abayafishamo.com</p>
+                <p class="text-xs text-white/70 font-light mt-2">WA: +62 831 8006 5732</p>
             </div>
 
         </div>
 
         {{-- BOTTOM --}}
-        <div class="pt-8 flex flex-col md:flex-row items-center justify-between
-                    gap-4 text-white/50 text-sm">
-
-            <p>© {{ date('Y') }} Abaya Fishamo. All Rights Reserved.</p>
-
-            <p>Luxury Modest Fashion Indonesia</p>
-
+        <div class="border-t border-white/10 pt-6 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 text-[10px] sm:text-xs font-light text-white/50 uppercase tracking-[1px]">
+            <p>© {{ date('Y') }} ABAYA FISHAMO. ALL RIGHTS RESERVED.</p>
+            <p>IDR / INDONESIA</p>
         </div>
 
     </div>
@@ -410,52 +325,58 @@
 {{-- SCRIPTS --}}
 <script>
 
+    // Mobile Menu
     function toggleMobileMenu() {
-        document.getElementById('mobileMenu')?.classList.toggle('hidden');
+        const menu = document.getElementById('mobileMenu');
+        const backdrop = document.getElementById('mobileBackdrop');
+        
+        if (menu.classList.contains('-translate-x-full')) {
+            menu.classList.remove('-translate-x-full');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden'; // prevent scrolling
+        } else {
+            menu.classList.add('-translate-x-full');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
     }
 
+    // Search Dropdown
+    function toggleSearch() {
+        const overlay = document.getElementById('searchOverlay');
+        const input = document.getElementById('searchInput');
+        
+        if (overlay.classList.contains('hidden')) {
+            overlay.classList.remove('hidden');
+            setTimeout(() => input.focus(), 100);
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    // Profile Menu
     function toggleProfileMenu() {
         document.getElementById('profileMenu')?.classList.toggle('hidden');
     }
 
-    // Search toggle
-    const searchToggle = document.getElementById('searchToggle');
-    const searchBox    = document.getElementById('searchBox');
-    const searchWrapper = document.getElementById('searchWrapper');
-
-    if (searchToggle && searchBox) {
-        searchToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            searchBox.classList.toggle('hidden');
-        });
-    }
-
-    // Close dropdowns when clicking outside
+    // Close dropdowns on outside click
     window.addEventListener('click', function (e) {
-
-        // Close profile menu
         const profileWrapper = document.getElementById('profileWrapper');
         const profileMenu    = document.getElementById('profileMenu');
 
         if (profileWrapper && profileMenu && !profileWrapper.contains(e.target)) {
             profileMenu.classList.add('hidden');
         }
-
-        // Close search
-        if (searchWrapper && searchBox && !searchWrapper.contains(e.target)) {
-            searchBox.classList.add('hidden');
-        }
-
     });
 
-    // Navbar shadow on scroll
+    // Navbar scroll effect
     window.addEventListener('scroll', () => {
         const nav = document.getElementById('mainNav');
         if (nav) {
             if (window.scrollY > 10) {
-                nav.classList.add('shadow-md');
+                nav.classList.add('py-0');
             } else {
-                nav.classList.remove('shadow-md');
+                nav.classList.remove('py-0');
             }
         }
     });

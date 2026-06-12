@@ -1,651 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Abaya Fishamo</title>
+@extends('layouts.admin')
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@section('content')
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
+<div class="space-y-8">
 
-<body class="bg-[#edf1eb] text-[#2f312e]">
+    {{-- WELCOME HERO CARD --}}
+    <div class="relative overflow-hidden bg-gradient-to-r from-[#bfc9c0] via-[#d8dfd8] to-[#bfc9c0] 
+                rounded-2xl md:rounded-[32px] p-5 sm:p-8 md:p-12 shadow-[0_15px_40px_rgba(0,0,0,0.04)] border border-[#d7ddd2]">
+        {{-- Elegant circles decoration --}}
+        <div class="absolute -top-24 -right-24 w-60 h-60 rounded-full bg-white/20 blur-2xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-[#55624d]/10 blur-2xl"></div>
 
-<div class="min-h-screen bg-[#edf1eb]">
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="text-left">
+                <p class="uppercase tracking-[2px] sm:tracking-[4px] text-xs font-semibold text-[#5e6858] mb-2">
+                    KONTROL UTAMA
+                </p>
+                <h2 class="text-2xl sm:text-3xl md:text-5xl font-light text-[#252825] leading-tight">
+                    Selamat Datang Kembali, <span class="font-semibold text-[#384232] break-words">{{ auth()->user()->name }}</span>
+                </h2>
+                <p class="text-[#5d6559] text-sm md:text-base mt-4 max-w-xl font-light">
+                    Kelola produk premium, lacak pesanan masuk, pantau ketersediaan stok, dan kendalikan seluruh aktivitas toko Abaya Fishamo dengan dasbor modern.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="/admin/products" 
+                       class="bg-[#55624d] hover:bg-[#40483a] text-white text-xs font-semibold px-6 py-3 rounded-xl shadow-md transition hover:scale-105">
+                        <i class="bi bi-box-seam mr-2"></i> Kelola Produk
+                    </a>
+                    <a href="{{ route('admin.orders.index') }}" 
+                       class="bg-white hover:bg-gray-50 text-[#2f312e] text-xs font-semibold px-6 py-3 rounded-xl border border-[#d7ddd2] shadow-sm transition hover:scale-105">
+                        <i class="bi bi-bag-check mr-2"></i> Lacak Pesanan
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hidden md:block">
+                <i class="bi bi-shield-check text-[140px] text-[#55624d]/15"></i>
+            </div>
+        </div>
+    </div>
 
-    <!-- TOP BAR -->
-    <div class="bg-gradient-to-r
-                from-[#55624d]
-                via-[#7b8870]
-                to-[#55624d]
-                text-white text-center
-                py-3
-                text-[10px] md:text-sm
-                tracking-[4px]">
+    {{-- STATS CARDS GRID --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        
+        {{-- TOTAL PRODUCTS --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Total Products</p>
+                    <h3 class="text-3xl font-light text-[#252825] mt-2">{{ $totalProducts }}</h3>
+                    <p class="text-xs text-emerald-600 mt-2 font-medium">
+                        <i class="bi bi-arrow-up-short"></i> +3 ditambahkan minggu ini
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+            </div>
+        </div>
 
-        ABAYA FISHAMO ADMIN PANEL
+        {{-- TOTAL USERS --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Total Users</p>
+                    <h3 class="text-3xl font-light text-[#252825] mt-2">{{ $totalUsers }}</h3>
+                    <p class="text-xs text-emerald-600 mt-2 font-medium">
+                        <i class="bi bi-arrow-up-short"></i> +10 pendaftar baru
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+        </div>
+
+        {{-- TOTAL STOCK --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Total Stock</p>
+                    <h3 class="text-3xl font-light text-[#252825] mt-2">{{ $totalStock }} <span class="text-xs text-gray-400 font-light">pcs</span></h3>
+                    <p class="text-xs text-[#7c8477] mt-2 font-medium">
+                        <i class="bi bi-check-circle-fill text-emerald-500"></i> Stok terintegrasi aman
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-archive"></i>
+                </div>
+            </div>
+        </div>
+
+        {{-- CATEGORIES --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Categories</p>
+                    <h3 class="text-3xl font-light text-[#252825] mt-2">{{ $totalCategory }}</h3>
+                    <p class="text-xs text-[#7c8477] mt-2 font-medium">
+                        <i class="bi bi-tag-fill text-[#7b8870]"></i> Kategori aktif
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-grid"></i>
+                </div>
+            </div>
+        </div>
+
+        {{-- PRODUCTS SOLD --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Products Sold</p>
+                    <h3 class="text-3xl font-light text-[#252825] mt-2">{{ $totalSold }}</h3>
+                    <p class="text-xs text-emerald-600 mt-2 font-medium">
+                        <i class="bi bi-arrow-up-short"></i> +8 item terjual hari ini
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+            </div>
+        </div>
+
+        {{-- REVENUE --}}
+        <div class="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#7c8477] text-sm font-medium">Total Revenue</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-[#55624d] mt-2 break-all">Rp {{ number_format($totalRevenue) }}</h3>
+                    <p class="text-xs text-emerald-600 mt-2 font-medium">
+                        <i class="bi bi-graph-up-arrow"></i> +15.4% dibanding bulan lalu
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+        </div>
 
     </div>
 
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50
-                bg-[#edf1eb]/95
-                backdrop-blur-md
-                border-b border-[#d8ddd3]
-                shadow-sm">
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="flex items-center justify-between h-20 md:h-24">
-
-                <!-- LEFT MENU -->
-                <div class="hidden lg:flex items-center gap-8">
-
-                    <a href="/admin/dashboard"
-                       class="text-[#2d312b]
-                              border-b border-[#2d312b]
-                              pb-1
-                              font-medium">
-
-                        Dashboard
-
-                    </a>
-
-                    <a href="/admin/products"
-                       class="text-[#4d5449] hover:text-black transition">
-
-                        Products
-
-                    </a>
-                    <a href="{{ route('admin.orders.index') }}"
-   class="text-[#4d5449] hover:text-black transition">
-
-    Orders
-
-</a>
-
-                </div>
-
-                <!-- MOBILE BUTTON -->
-                <button onclick="toggleMenu()"
-                        class="lg:hidden text-3xl text-[#4b5446]">
-
-                    ☰
-
-                </button>
-
-                <!-- LOGO -->
-                <div class="flex items-center gap-3">
-
-                    <div class="text-center">
-
-                        <h1 class="text-2xl md:text-4xl
-                                   tracking-[6px] md:tracking-[10px]
-                                   font-light
-                                   leading-none
-                                   text-[#252825]">
-
-                            ABAYA
-
-                        </h1>
-
-                        <p class="text-[10px] md:text-xs
-                                  tracking-[5px]
-                                  text-[#6d7568]
-                                  mt-1">
-
-                            ADMIN
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- RIGHT -->
-                <div class="flex items-center gap-3 md:gap-5">
-
-                    <!-- PRODUCT BUTTON -->
-                    <a href="/admin/products/create"
-                       class="hidden md:flex
-                              items-center gap-2
-                              bg-gradient-to-br
-                              from-[#66725d]
-                              to-[#4e5b46]
-                              text-white
-                              px-5 py-3
-                              rounded-2xl
-                              shadow-lg
-                              hover:scale-105
-                              transition">
-
-                        <i class="bi bi-plus-circle-fill"></i>
-
-                        Add Product
-
-                    </a>
-
-                    <!-- PROFILE -->
-                    <div class="relative" id="profileWrapper">
-
-                        <button onclick="toggleProfileMenu()"
-                                class="flex items-center gap-3
-                                       bg-white/80
-                                       hover:bg-white
-                                       px-3 py-2
-                                       rounded-full
-                                       border border-[#d7ddd2]
-                                       shadow-sm
-                                       transition">
-
-                            <img
-                                src="{{ asset('storage/' . auth()->user()->photo) }}"
-                                alt="Profile"
-                                class="w-10 h-10 rounded-full object-cover">
-
-                            <div class="hidden md:block text-left">
-
-                                <p class="text-xs text-gray-500">
-                                    Admin
-                                </p>
-
-                                <p class="font-semibold text-sm text-[#2f312e]">
-                                    {{ auth()->user()->name }}
-                                </p>
-
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="w-4 h-4 text-[#555]"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
-                                      d="M19 9l-7 7-7-7"/>
-
-                            </svg>
-
-                        </button>
-
-                        <!-- DROPDOWN -->
-                        <div id="profileMenu"
-                             class="hidden absolute right-0 mt-3
-                                    w-56
-                                    bg-white
-                                    rounded-2xl
-                                    shadow-xl
-                                    border border-[#dde3d8]
-                                    overflow-hidden">
-
-                            <!-- HEADER -->
-                            <div class="px-4 py-4
-                                        bg-gradient-to-r
-                                        from-[#66725d]
-                                        to-[#87927d]
-                                        text-white">
-
-                                <p class="font-semibold">
-                                    {{ auth()->user()->name }}
-                                </p>
-
-                                <p class="text-sm opacity-80 break-all">
-                                    {{ auth()->user()->email }}
-                                </p>
-
-                            </div>
-
-                            <!-- MENU -->
-                            <div class="py-2">
-
-                                <a href="/profile"
-                                   class="block px-4 py-3
-                                          hover:bg-[#edf1eb]
-                                          transition">
-
-                                    Profile
-
-                                </a>
-
-                                <a href="/admin/products"
-                                   class="block px-4 py-3
-                                          hover:bg-[#edf1eb]
-                                          transition">
-
-                                    Manage Products
-
-                                </a>
-
-                                <!-- LOGOUT -->
-                                <form method="POST"
-                                      action="{{ route('logout') }}">
-
-                                    @csrf
-
-                                    <button type="submit"
-                                            class="w-full text-left
-                                                   px-4 py-3
-                                                   hover:bg-red-50
-                                                   text-red-500
-                                                   transition">
-
-                                        Logout
-
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+    {{-- RECENT TRANSACTION TABLES --}}
+    <div class="bg-white rounded-2xl md:rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] p-4 sm:p-6 md:p-8">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div class="text-left">
+                <h3 class="text-lg font-semibold text-[#252825]">Pesanan Terbaru</h3>
+                <p class="text-xs text-[#7c8477] mt-0.5">Pantau pesanan yang baru masuk</p>
             </div>
-
-            <!-- MOBILE MENU -->
-            <div id="mobileMenu"
-                 class="hidden lg:hidden pb-6">
-
-                <div class="flex flex-col gap-4 pt-4">
-
-                    <a href="/admin/dashboard"
-                       class="text-[#444] font-medium">
-
-                        Dashboard
-
-                    </a>
-
-                    <a href="/admin/products"
-                       class="text-[#444] font-medium">
-
-                        Products
-
-                    </a>
-
-                    <a href="{{ route('admin.orders.index') }}"
-   class="text-[#444] font-medium">
-
-    Orders
-
-</a>
-
-                    <a href="/admin/products/create"
-                       class="text-[#444] font-medium">
-
-                        Add Product
-
-                    </a>
-
-                </div>
-
-            </div>
-
+            
+            <a href="{{ route('admin.orders.index') }}" 
+               class="text-xs font-semibold text-[#55624d] hover:text-[#40483a] hover:underline flex items-center gap-1">
+                <span>Lihat Semua Pesanan</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
 
-    </nav>
-
-    <!-- CONTENT -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-        <!-- HERO -->
-        <div class="bg-gradient-to-r
-                    from-[#bfc9c0]
-                    to-[#d8dfd8]
-                    rounded-[40px]
-                    p-10 md:p-14
-                    shadow-[0_15px_40px_rgba(0,0,0,0.08)]
-                    border border-[#d7ddd2]">
-
-            <div class="flex flex-col lg:flex-row
-                        items-center
-                        justify-between
-                        gap-10">
-
-                <!-- TEXT -->
-                <div>
-
-                    <p class="uppercase
-                              tracking-[5px]
-                              text-sm
-                              text-[#5e6858]
-                              mb-4">
-
-                        Admin Dashboard
-
-                    </p>
-
-                    <h1 class="text-4xl md:text-6xl
-                               font-light
-                               leading-tight
-                               text-[#252825]">
-
-                        Welcome Back
-                        <span class="font-semibold">
-                            Admin
-                        </span>
-
-                    </h1>
-
-                    <p class="text-[#5d6559]
-                              text-lg
-                              mt-6
-                              max-w-2xl">
-
-                        Kelola produk, user, stock, dan seluruh aktivitas
-                        Abaya Fishamo Store dengan tampilan premium modern.
-
-                    </p>
-
-                    <div class="mt-8 flex flex-wrap gap-4">
-
-                        <a href="/admin/products"
-                           class="bg-[#55624d]
-                                  hover:bg-[#40483a]
-                                  text-white
-                                  px-8 py-4
-                                  rounded-2xl
-                                  font-semibold
-                                  transition">
-
-                            Manage Products
-
-                        </a>
-
-                        <a href="/admin/products/create"
-                           class="bg-white
-                                  hover:bg-[#f5f5f5]
-                                  text-[#2f312e]
-                                  px-8 py-4
-                                  rounded-2xl
-                                  font-semibold
-                                  border border-[#d7ddd2]
-                                  transition">
-
-                            Add New Product
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <!-- LOGO -->
-                <div>
-
-                    <img src="{{ asset('images/logo.png') }}"
-                         class="w-48 md:w-60 drop-shadow-2xl">
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- STATS -->
-        <div class="grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    xl:grid-cols-3
-                    gap-6
-                    mt-12">
-
-            <!-- CARD -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Total Products
-                        </p>
-
-                        <h2 class="text-5xl font-light mt-4">
-                            {{ $totalProducts }}
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-box-seam text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- USERS -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Total Users
-                        </p>
-
-                        <h2 class="text-5xl font-light mt-4">
-                            {{ $totalUsers }}
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-people text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- STOCK -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Total Stock
-                        </p>
-
-                        <h2 class="text-5xl font-light mt-4">
-                            {{ $totalStock }}
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-archive text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- CATEGORY -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Categories
-                        </p>
-
-                        <h2 class="text-5xl font-light mt-4">
-                            {{ $totalCategory }}
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-grid text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- SOLD -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Products Sold
-                        </p>
-
-                        <h2 class="text-5xl font-light mt-4">
-                            {{ $totalSold }}
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-bag-check text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- REVENUE -->
-            <div class="bg-white
-                        rounded-[30px]
-                        p-8
-                        shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-                        border border-[#e1e5dd]">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <p class="text-[#7c8477] text-lg">
-                            Revenue
-                        </p>
-
-                        <h2 class="text-3xl md:text-4xl
-                                   font-semibold
-                                   text-[#55624d]
-                                   mt-4">
-
-                            Rp {{ number_format($totalRevenue) }}
-
-                        </h2>
-
-                    </div>
-
-                    <div class="w-16 h-16
-                                rounded-2xl
-                                bg-[#edf1eb]
-                                flex items-center justify-center">
-
-                        <i class="bi bi-cash-stack text-3xl text-[#55624d]"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr class="border-b border-[#edf1eb] text-[#7c8477] text-xs font-semibold uppercase tracking-wider">
+                        <th class="py-4 px-4 whitespace-nowrap">Nama Pelanggan</th>
+                        <th class="py-4 px-4 whitespace-nowrap">Kontak / HP</th>
+                        <th class="py-4 px-4 whitespace-nowrap">Total Item</th>
+                        <th class="py-4 px-4 whitespace-nowrap">Total Belanja</th>
+                        <th class="py-4 px-4 whitespace-nowrap">Status Pesanan</th>
+                        <th class="py-4 px-4 text-center whitespace-nowrap">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#edf1eb]">
+                    @forelse($recentOrders as $order)
+                        <tr class="hover:bg-[#f8faf7] transition-colors">
+                            <td class="py-4 px-4 font-semibold text-[#2f312e] whitespace-nowrap">{{ $order->customer_name }}</td>
+                            <td class="py-4 px-4 text-xs text-[#5d6559] whitespace-nowrap">{{ $order->phone }}</td>
+                            <td class="py-4 px-4 text-center whitespace-nowrap">{{ $order->total_item }} item</td>
+                            <td class="py-4 px-4 font-bold text-[#55624d] whitespace-nowrap">Rp {{ number_format($order->total_price) }}</td>
+                            <td class="py-4 px-4">
+                                @if($order->status == 'pending')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Pending
+                                    </span>
+                                @elseif($order->status == 'completed' || $order->status == 'selesai')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Selesai
+                                    </span>
+                                @elseif($order->status == 'processing' || $order->status == 'dikirim')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span> Dikirim
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full bg-gray-50 text-gray-700 border border-gray-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gray-500"></span> {{ $order->status }}
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <a href="{{ route('admin.orders.index') }}" 
+                                   class="inline-flex items-center gap-1.5 bg-[#edf1eb] hover:bg-[#dfe6da] text-[#55624d] text-xs font-medium px-3.5 py-1.5 rounded-lg transition">
+                                    <i class="bi bi-eye"></i> Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-10 text-[#7c8477] font-light">
+                                <i class="bi bi-bag-x text-4xl block text-[#c2c8bc] mb-2"></i>
+                                Belum ada pesanan terbaru masuk saat ini.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
     </div>
 
 </div>
 
-<!-- SCRIPT -->
-<script>
-
-    function toggleMenu() {
-
-        document
-            .getElementById('mobileMenu')
-            ?.classList
-            .toggle('hidden');
-
-    }
-
-    function toggleProfileMenu() {
-
-        document
-            .getElementById('profileMenu')
-            ?.classList
-            .toggle('hidden');
-
-    }
-
-    window.addEventListener('click', function(e) {
-
-        const wrapper = document.getElementById('profileWrapper');
-        const menu = document.getElementById('profileMenu');
-
-        if (wrapper && menu && !wrapper.contains(e.target)) {
-
-            menu.classList.add('hidden');
-
-        }
-
-    });
-
-</script>
-
-</body>
-</html>
+@endsection

@@ -28,19 +28,42 @@ class DashboardController extends Controller
             return redirect('/admin/dashboard');
         }
 
-        // SEARCH
+        // UNIQUE CATEGORIES FOR FILTER PILLS
+        $categories = Product::select('category')->distinct()->pluck('category');
+
+        // INPUTS
         $search = $request->search;
+        $category = $request->category;
+        $sort = $request->sort;
 
         // PRODUCT QUERY
-        $products = Product::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('category', 'like', '%' . $search . '%')
-                      ->orWhere('color', 'like', '%' . $search . '%');
-            })
-            ->latest()
-            ->get();
+        $query = Product::query();
 
-        return view('dashboard', compact('products'));
+        // SEARCH FILTER
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('category', 'like', '%' . $search . '%')
+                  ->orWhere('color', 'like', '%' . $search . '%');
+            });
+        }
+
+        // CATEGORY FILTER
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        // SORTING
+        if ($sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } else {
+            $query->latest(); // Default: Newest
+        }
+
+        $products = $query->get();
+
+        return view('dashboard', compact('products', 'categories'));
     }
 }

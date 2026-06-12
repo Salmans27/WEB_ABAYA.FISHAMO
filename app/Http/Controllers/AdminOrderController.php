@@ -9,7 +9,7 @@ class AdminOrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('items.product')
+        $orders = Order::with(['items.product', 'payment'])
                     ->latest()
                     ->get();
 

@@ -12,7 +12,7 @@
 
     </p>
 
-    <h1 class="text-5xl md:text-6xl
+    <h1 class="text-3xl sm:text-4xl md:text-6xl
                font-light
                text-[#2d312b]">
 
@@ -47,7 +47,7 @@
                     from-[#66725d]
                     via-[#7a8670]
                     to-[#55624d]
-                    p-12
+                    p-8 sm:p-12
                     text-white
                     flex flex-col justify-between">
 
@@ -62,10 +62,10 @@
 
                 </p>
 
-                <h2 class="text-5xl
+                <h2 class="text-3xl sm:text-5xl
                            font-light
                            leading-tight
-                           mt-8">
+                           mt-6 sm:mt-8">
 
                     Upload
                     Premium
@@ -73,10 +73,10 @@
 
                 </h2>
 
-                <p class="mt-8
+                <p class="mt-6 sm:mt-8
                           text-white/80
-                          leading-8
-                          text-lg">
+                          leading-relaxed sm:leading-8
+                          text-base sm:text-lg">
 
                     Tambahkan produk baru dengan detail lengkap
                     agar tampil premium di halaman user dan admin.
@@ -89,14 +89,14 @@
             <div class="mt-14">
 
                 <img src="{{ asset('images/logo.png') }}"
-                     class="w-40 opacity-90">
+                     class="w-24 sm:w-40 opacity-90">
 
             </div>
 
         </div>
 
         <!-- RIGHT SIDE -->
-        <div class="p-10 md:p-14">
+        <div class="p-6 sm:p-10 md:p-14">
 
             <form action="{{ route('admin.products.store') }}"
                   method="POST"
@@ -161,150 +161,94 @@
 
                 </div>
 
-                <!-- PRICE + STOCK -->
+                <!-- PRICE + CATEGORY -->
                 <div class="grid md:grid-cols-2 gap-6">
 
                     <!-- PRICE -->
                     <div>
 
-                        <label class="block
-                                     text-sm
-                                     font-semibold
-                                     text-[#55624d]
-                                     mb-3">
-
+                        <label class="block text-sm font-semibold text-[#55624d] mb-3">
                             Harga
-
                         </label>
 
                         <input type="number"
                                name="price"
                                value="{{ old('price') }}"
                                placeholder="250000"
-                               class="w-full
-                                      bg-[#f7f9f6]
-                                      border border-[#d9dfd5]
-                                      rounded-2xl
-                                      px-6 py-5
-                                      focus:outline-none
-                                      focus:ring-2
-                                      focus:ring-[#66725d]">
+                               class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-2xl px-6 py-5 focus:outline-none focus:ring-2 focus:ring-[#66725d]">
 
                     </div>
 
-                    <!-- STOCK -->
+                    <!-- CATEGORY -->
                     <div>
 
-                        <label class="block
-                                     text-sm
-                                     font-semibold
-                                     text-[#55624d]
-                                     mb-3">
-
-                            Stock
-
+                        <label class="block text-sm font-semibold text-[#55624d] mb-3">
+                            Kategori
                         </label>
 
-                        <input type="number"
-                               name="stock"
-                               value="{{ old('stock') }}"
-                               placeholder="10"
-                               class="w-full
-                                      bg-[#f7f9f6]
-                                      border border-[#d9dfd5]
-                                      rounded-2xl
-                                      px-6 py-5
-                                      focus:outline-none
-                                      focus:ring-2
-                                      focus:ring-[#66725d]">
+                        <input type="text"
+                               name="category"
+                               value="{{ old('category') }}"
+                               placeholder="Luxury / Casual / Premium"
+                               class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-2xl px-6 py-5 focus:outline-none focus:ring-2 focus:ring-[#66725d]">
 
                     </div>
 
                 </div>
 
-                <!-- CATEGORY -->
+                <!-- VARIANTS (COLOR, SIZE & STOCK) -->
                 <div>
-
-                    <label class="block
-                                 text-sm
-                                 font-semibold
-                                 text-[#55624d]
-                                 mb-3">
-
-                        Kategori
-
+                    <label class="block text-sm font-semibold text-[#55624d] mb-3">
+                        Varian Warna, Ukuran & Stok
                     </label>
+                    <p class="text-xs text-[#687264] mb-4">Tambahkan kombinasi warna dan ukuran beserta stok masing-masing. Stok total akan dihitung otomatis.</p>
+                    
+                    <div id="variants-container" class="space-y-3">
+                        <!-- Default Variant Row -->
+                        <div class="flex gap-2 sm:gap-4 items-center variant-row">
+                            <input type="text" name="variants[0][color]" placeholder="Warna (Merah/Hitam)" required
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <input type="text" name="variants[0][size]" placeholder="Ukuran (S/M/L)" required
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <input type="number" name="variants[0][stock]" placeholder="Stok" required min="0"
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <button type="button" class="remove-variant-btn text-red-500 font-bold px-3 py-3 hover:bg-red-50 rounded-xl transition" onclick="removeVariant(this)">&times;</button>
+                        </div>
+                    </div>
 
-                    <input type="text"
-                           name="category"
-                           value="{{ old('category') }}"
-                           placeholder="Luxury / Casual / Premium"
-                           class="w-full
-                                  bg-[#f7f9f6]
-                                  border border-[#d9dfd5]
-                                  rounded-2xl
-                                  px-6 py-5
-                                  focus:outline-none
-                                  focus:ring-2
-                                  focus:ring-[#66725d]">
-
+                    <button type="button" id="add-variant-btn" onclick="addVariant()" class="mt-4 px-4 py-2 bg-[#f7f9f6] border border-[#d9dfd5] text-[#55624d] rounded-xl text-sm font-semibold hover:bg-[#e8ece6] transition">
+                        + Tambah Varian
+                    </button>
                 </div>
 
-                <!-- SIZE -->
-                <div>
+                <script>
+                    let variantCount = 1;
+                    function addVariant() {
+                        const container = document.getElementById('variants-container');
+                        const row = document.createElement('div');
+                        row.className = 'flex gap-2 sm:gap-4 items-center variant-row';
+                        row.innerHTML = `
+                            <input type="text" name="variants[${variantCount}][color]" placeholder="Warna (Merah/Hitam)" required
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <input type="text" name="variants[${variantCount}][size]" placeholder="Ukuran (S/M/L)" required
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <input type="number" name="variants[${variantCount}][stock]" placeholder="Stok" required min="0"
+                                   class="w-full bg-[#f7f9f6] border border-[#d9dfd5] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#66725d] text-sm">
+                            <button type="button" class="remove-variant-btn text-red-500 font-bold px-3 py-3 hover:bg-red-50 rounded-xl transition" onclick="removeVariant(this)">&times;</button>
+                        `;
+                        container.appendChild(row);
+                        variantCount++;
+                    }
 
-                    <label class="block
-                                 text-sm
-                                 font-semibold
-                                 text-[#55624d]
-                                 mb-3">
-
-                        Size
-
-                    </label>
-
-                    <input type="text"
-                           name="size"
-                           value="{{ old('size') }}"
-                           placeholder="S,M,L,XL"
-                           class="w-full
-                                  bg-[#f7f9f6]
-                                  border border-[#d9dfd5]
-                                  rounded-2xl
-                                  px-6 py-5
-                                  focus:outline-none
-                                  focus:ring-2
-                                  focus:ring-[#66725d]">
-
-                </div>
-
-                <!-- COLOR -->
-                <div>
-
-                    <label class="block
-                                 text-sm
-                                 font-semibold
-                                 text-[#55624d]
-                                 mb-3">
-
-                        Color
-
-                    </label>
-
-                    <input type="text"
-                           name="color"
-                           value="{{ old('color') }}"
-                           placeholder="Black, White, Nude"
-                           class="w-full
-                                  bg-[#f7f9f6]
-                                  border border-[#d9dfd5]
-                                  rounded-2xl
-                                  px-6 py-5
-                                  focus:outline-none
-                                  focus:ring-2
-                                  focus:ring-[#66725d]">
-
-                </div>
+                    function removeVariant(button) {
+                        const container = document.getElementById('variants-container');
+                        if (container.children.length > 1) {
+                            button.parentElement.remove();
+                        } else {
+                            alert("Harus ada minimal 1 varian!");
+                        }
+                    }
+                </script>
 
                 <!-- IMAGE -->
                 <div>

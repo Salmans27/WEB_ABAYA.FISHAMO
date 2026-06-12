@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Order;
 
 class AdminDashboardController extends Controller
 {
@@ -21,13 +22,17 @@ class AdminDashboardController extends Controller
         
         $totalRevenue = Product::selectRaw('SUM(price * sold) as total')->value('total');
 
+        // RECENT ORDERS
+        $recentOrders = Order::latest()->take(5)->get();
+
         return view('admin.dashboard', compact(
             'totalProducts',
             'totalUsers',
             'totalStock',
             'totalCategory',
             'totalSold',
-            'totalRevenue'
+            'totalRevenue',
+            'recentOrders'
         ));
     }
 }

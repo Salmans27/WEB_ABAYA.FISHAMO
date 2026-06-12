@@ -6,9 +6,9 @@
         </h2>
     </x-slot>
 
-    <div class="min-h-screen bg-[#edf1ed] py-10">
+    <div class="min-h-screen bg-[#edf1ed] py-6 sm:py-10 px-4 sm:px-6">
 
-        <div class="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl">
+        <div class="max-w-3xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl">
 
             <!-- ERROR -->
             @if ($errors->any())
@@ -92,47 +92,75 @@
 
                 </div>
 
-                <!-- STOCK -->
+                <!-- VARIANTS (COLOR, SIZE & STOCK) -->
                 <div class="mb-5">
-
                     <label class="block mb-2 font-semibold text-gray-700">
-                        Stock
+                        Varian Warna, Ukuran & Stok
                     </label>
+                    <p class="text-xs text-gray-500 mb-4">Tambahkan kombinasi warna dan ukuran beserta stok masing-masing. Stok total akan dihitung otomatis.</p>
+                    
+                    <div id="variants-container" class="space-y-3">
+                        @if($product->variants && $product->variants->count() > 0)
+                            @foreach($product->variants as $index => $variant)
+                                <div class="flex gap-2 sm:gap-4 items-center variant-row">
+                                    <input type="text" name="variants[{{ $index }}][color]" value="{{ $variant->color }}" placeholder="Warna (Merah/Hitam)" required
+                                           class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                    <input type="text" name="variants[{{ $index }}][size]" value="{{ $variant->size }}" placeholder="Ukuran (S/M/L)" required
+                                           class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                    <input type="number" name="variants[{{ $index }}][stock]" value="{{ $variant->stock }}" placeholder="Stok" required min="0"
+                                           class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                    <button type="button" class="remove-variant-btn text-red-500 font-bold px-3 py-2 hover:bg-red-50 rounded-lg transition" onclick="removeVariant(this)">&times;</button>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="flex gap-2 sm:gap-4 items-center variant-row">
+                                <input type="text" name="variants[0][color]" placeholder="Warna (Merah/Hitam)" required
+                                       class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                <input type="text" name="variants[0][size]" placeholder="Ukuran (S/M/L)" required
+                                       class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                <input type="number" name="variants[0][stock]" placeholder="Stok" required min="0"
+                                       class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                                <button type="button" class="remove-variant-btn text-red-500 font-bold px-3 py-2 hover:bg-red-50 rounded-lg transition" onclick="removeVariant(this)">&times;</button>
+                            </div>
+                        @endif
+                    </div>
 
-                    <input type="number"
-                           name="stock"
-                           value="{{ old('stock', $product->stock) }}"
-                           class="w-full rounded-xl border-gray-300 focus:ring-gray-500">
-
+                    <button type="button" id="add-variant-btn" onclick="addVariant()" class="mt-4 px-4 py-2 bg-gray-100 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-200 transition">
+                        + Tambah Varian
+                    </button>
                 </div>
 
-                <!-- SIZE -->
-                <div class="mb-5">
+                <script>
+                    let variantCount = {{ $product->variants ? $product->variants->count() : 1 }};
+                    function addVariant() {
+                        const container = document.getElementById('variants-container');
+                        const row = document.createElement('div');
+                        row.className = 'flex gap-2 sm:gap-4 items-center variant-row';
+                        row.innerHTML = `
+                            <input type="text" name="variants[${variantCount}][color]" placeholder="Warna (Merah/Hitam)" required
+                                   class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                            <input type="text" name="variants[${variantCount}][size]" placeholder="Ukuran (S/M/L)" required
+                                   class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                            <input type="number" name="variants[${variantCount}][stock]" placeholder="Stok" required min="0"
+                                   class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#55624d] text-sm">
+                            <button type="button" class="remove-variant-btn text-red-500 font-bold px-3 py-2 hover:bg-red-50 rounded-lg transition" onclick="removeVariant(this)">&times;</button>
+                        `;
+                        container.appendChild(row);
+                        variantCount++;
+                    }
 
-                    <label class="block mb-2 font-semibold text-gray-700">
-                        Size
-                    </label>
+                    function removeVariant(button) {
+                        const container = document.getElementById('variants-container');
+                        if (container.children.length > 1) {
+                            button.parentElement.remove();
+                        } else {
+                            alert("Harus ada minimal 1 varian!");
+                        }
+                    }
+                </script>
 
-                    <input type="text"
-                           name="size"
-                           value="{{ old('size', $product->size) }}"
-                           class="w-full rounded-xl border-gray-300 focus:ring-gray-500">
 
-                </div>
 
-                <!-- COLOR -->
-                <div class="mb-5">
-
-                    <label class="block mb-2 font-semibold text-gray-700">
-                        Color
-                    </label>
-
-                    <input type="text"
-                           name="color"
-                           value="{{ old('color', $product->color) }}"
-                           class="w-full rounded-xl border-gray-300 focus:ring-gray-500">
-
-                </div>
 
                 <!-- CURRENT IMAGE -->
                 <div class="mb-5">

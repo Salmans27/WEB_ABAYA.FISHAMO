@@ -58,10 +58,11 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'category' => 'required|string|max:255',
-            'stock' => 'required|numeric',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'size' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:255',
+            'variants' => 'required|array|min:1',
+            'variants.*.size' => 'required|string|max:255',
+            'variants.*.stock' => 'required|integer|min:0',
         ]);
 
         $imagePath = null;
@@ -79,16 +80,37 @@ class ProductController extends Controller
             $imagePath = 'products/' . $imageName;
         }
 
-        Product::create([
+        $totalStock = 0;
+        $sizes = [];
+        $colors = [];
+        if ($request->has('variants')) {
+            foreach ($request->variants as $variant) {
+                $totalStock += $variant['stock'];
+                $sizes[] = $variant['size'];
+                $colors[] = $variant['color'];
+            }
+        }
+
+        $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'category' => $request->category,
-            'stock' => $request->stock,
+            'stock' => $totalStock,
             'image' => $imagePath,
-            'size' => $request->size,
-            'color' => $request->color,
+            'size' => implode(', ', array_unique($sizes)),
+            'color' => implode(', ', array_unique($colors)),
         ]);
+
+        if ($request->has('variants')) {
+            foreach ($request->variants as $variant) {
+                $product->variants()->create([
+                    'size' => $variant['size'],
+                    'stock' => $variant['stock'],
+                    'color' => $variant['color'],
+                ]);
+            }
+        }
 
         return redirect('/admin/products')
             ->with('success', 'Product berhasil ditambahkan');
@@ -102,7 +124,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('variants')->findOrFail($id);
 
         return view('admin.products.edit', compact('product'));
     }
@@ -122,10 +144,11 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'category' => 'required|string|max:255',
-            'stock' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'size' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:255',
+            'variants' => 'required|array|min:1',
+            'variants.*.size' => 'required|string|max:255',
+            'variants.*.stock' => 'required|integer|min:0',
         ]);
 
         /*
@@ -162,15 +185,40 @@ class ProductController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $totalStock = 0;
+        $sizes = [];
+        $colors = [];
+        if ($request->has('variants')) {
+            foreach ($request->variants as $variant) {
+                $totalStock += $variant['stock'];
+                $sizes[] = $variant['size'];
+                $colors[] = $variant['color'];
+            }
+        }
+
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->category = $request->category;
-        $product->stock = $request->stock;
-        $product->size = $request->size;
-        $product->color = $request->color;
-
+        $product->stock = $totalStock;
+        $product->size = implode(', ', array_unique($sizes));
+        $product->color = implode(', ', array_unique($colors));
+        
         $product->save();
+
+        if ($request->has('variants')) {
+            // Delete old variants
+            $product->variants()->delete();
+            
+            // Re-create variants
+            foreach ($request->variants as $variant) {
+                $product->variants()->create([
+                    'size' => $variant['size'],
+                    'stock' => $variant['stock'],
+                    'color' => $variant['color'],
+                ]);
+            }
+        }
 
         return redirect('/admin/products')
             ->with('success', 'Product berhasil diupdate');

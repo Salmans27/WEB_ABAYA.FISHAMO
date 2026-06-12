@@ -1,515 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.store')
 
-    <title>{{ $product->name }}</title>
+@section('title', $product->name . ' — Abaya Fishamo')
 
-    <!-- BOOTSTRAP ICON -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+@section('content')
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+<div class="bg-[#edf1eb] min-h-screen py-6 sm:py-10 md:py-16">
 
-<body class="bg-[#edf1ed]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- TOP BAR -->
-    <div class="bg-gradient-to-r
-                from-[#55624d]
-                via-[#7b8870]
-                to-[#55624d]
-                text-white text-center
-                py-3
-                text-[10px] md:text-sm
-                tracking-[4px]">
-
-        FREE SHIPPING ACROSS INDONESIA ON ORDERS OVER Rp 500.000
-
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50
-                bg-[#edf1eb]/95
-                backdrop-blur-md
-                border-b border-[#d8ddd3]
-                shadow-sm">
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="flex items-center justify-between h-20 md:h-24">
-
-                <!-- LEFT -->
-                <div class="flex items-center gap-10">
-
-                    <!-- LOGO -->
-                    <div class="flex items-center gap-4">
-
-                        <img
-                            src="{{ asset('images/logo.png') }}"
-                            alt="Abaya Fishamo"
-                            class="w-14 h-20 object-cover rounded-full">
-
-                        <div>
-
-                            <h1 class="text-2xl md:text-3xl
-                                       font-semibold
-                                       text-[#2d312b]">
-
-                                Abaya Fishamo
-
-                            </h1>
-
-                            <p class="text-[#7c8477] text-sm">
-                                Abaya Fishamo Store
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <!-- MENU -->
-                    <a href="/dashboard"
-                       class="text-[#2d312b]
-                              font-semibold
-                              hover:text-black
-                              transition">
-
-                        Dashboard
-
-                    </a>
-
-                </div>
-
-                <!-- RIGHT -->
-                <div class="flex items-center gap-4">
-
-                    <!-- FAVORITE -->
-                    <a href="/favorite"
-                       class="w-12 h-12
-                              rounded-full
-                              bg-gradient-to-br
-                              from-[#dfe6da]
-                              to-[#cfd7c8]
-                              flex items-center justify-center
-                              text-[#55624d]
-                              shadow-md
-                              hover:scale-105 transition">
-
-                        <i class="bi bi-box2-heart-fill"></i>
-
-                    </a>
-
-                    <!-- CART -->
-                    <a href="/cart"
-                       class="relative
-                              w-12 h-12
-                              rounded-full
-                              bg-gradient-to-br
-                              from-[#66725d]
-                              to-[#4e5b46]
-                              flex items-center justify-center
-                              text-white
-                              shadow-lg
-                              hover:scale-105 transition">
-
-                        <i class="bi bi-cart-plus-fill"></i>
-
-                    </a>
-
-                    <!-- PROFILE -->
-                    <div class="flex items-center gap-3
-                                bg-white
-                                px-4 py-2
-                                rounded-2xl
-                                shadow-md">
-
-                        <img
-                            src="{{ asset('storage/' . auth()->user()->photo) }}"
-                            alt="Profile"
-                            class="w-12 h-12 rounded-full object-cover">
-
-                        <div>
-
-                            <p class="font-semibold text-[#2f312e]">
-                                {{ auth()->user()->name }}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+        {{-- BREADCRUMB --}}
+        <div class="mb-8 flex items-center text-xs tracking-[2px] uppercase text-[#7b8870] font-medium">
+            <a href="{{ route('dashboard') }}" class="hover:text-[#55624d] transition">Shop</a>
+            <span class="mx-3">/</span>
+            <span class="text-[#55624d]">{{ $product->category }}</span>
+            <span class="mx-3">/</span>
+            <span class="text-[#2d312b] line-clamp-1">{{ $product->name }}</span>
         </div>
 
-    </nav>
+        <div class="bg-white rounded-2xl sm:rounded-[32px] md:rounded-[48px] shadow-sm border border-[#e4eae0] overflow-hidden">
 
-    <!-- CONTENT -->
-    <div class="min-h-screen py-12">
+            <div class="grid lg:grid-cols-2 gap-0">
 
-        <div class="max-w-7xl mx-auto px-6">
+                {{-- LEFT: IMAGE --}}
+                <div class="p-4 sm:p-6 md:p-10 lg:p-12 lg:border-r border-[#e4eae0] bg-[#f8faf7]">
 
-            <div class="bg-white rounded-[40px] shadow-2xl overflow-hidden">
+                    @if($product->image)
+                        <div class="overflow-hidden rounded-[24px] md:rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+                            <img src="{{ asset('storage/' . $product->image) }}"
+                                 alt="{{ $product->name }}"
+                                 class="w-full aspect-[3/4] object-cover hover:scale-105 transition-transform duration-1000 ease-in-out cursor-zoom-in">
+                        </div>
+                    @else
+                        <div class="w-full aspect-[3/4] bg-[#dfe6da]/50 rounded-[24px] flex items-center justify-center">
+                            <i class="bi bi-image text-6xl text-[#7b8870]"></i>
+                        </div>
+                    @endif
 
-                <div class="grid lg:grid-cols-2 gap-12">
+                </div>
 
-                    <!-- IMAGE -->
-                    <div class="p-8">
+                {{-- RIGHT: PRODUCT INFO --}}
+                <div class="p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center">
 
-                        @if($product->image)
-
-                            <div class="overflow-hidden rounded-[35px]">
-
-                                <img src="{{ asset('storage/' . $product->image) }}"
-                                     class="w-full h-[750px]
-                                            object-cover
-                                            hover:scale-105
-                                            transition duration-700">
-
-                            </div>
-
-                        @else
-
-                            <div class="w-full h-[750px]
-                                        bg-gray-200
-                                        rounded-[35px]
-                                        flex items-center justify-center">
-
-                                <span class="text-gray-500 text-xl">
-                                    No Image
-                                </span>
-
-                            </div>
-
-                        @endif
-
-                    </div>
-
-                    <!-- CONTENT -->
-                    <div class="p-10 flex flex-col justify-center">
-
-                        <!-- CATEGORY -->
-                        <p class="text-sm uppercase
-                                  tracking-[5px]
-                                  text-[#7c8477]">
-
+                    <div class="mb-8">
+                        <p class="text-xs uppercase tracking-[4px] text-[#7b8870] font-semibold mb-3">
                             {{ $product->category }}
-
                         </p>
 
-                        <!-- TITLE -->
-                        <h1 class="text-5xl lg:text-6xl
-                                   font-light
-                                   text-[#2d312b]
-                                   mt-4 leading-tight">
-
+                        <h1 class="text-2xl sm:text-3xl md:text-5xl font-light text-[#2d312b] leading-tight tracking-[1px]">
                             {{ $product->name }}
-
                         </h1>
 
-                        <!-- PRICE -->
-                        <p class="text-5xl
-                                  font-bold
-                                  text-[#55624d]
-                                  mt-8">
-
-                            Rp {{ number_format($product->price) }}
-
+                        <p class="text-xl sm:text-3xl md:text-4xl font-normal text-[#55624d] mt-4 sm:mt-6 tracking-[1px]">
+                            IDR {{ number_format($product->price) }}
                         </p>
+                    </div>
 
-                        <!-- STOCK -->
-                        <div class="mt-6">
+                    <div class="w-full h-[1px] bg-[#e4eae0] mb-8"></div>
 
-                            <span class="bg-[#edf1ed]
-                                         text-[#55624d]
-                                         px-6 py-3
-                                         rounded-2xl
-                                         font-semibold">
+                    <form method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                                Stock: {{ $product->stock }}
+                        @php
+                            $colors = $product->color ? array_map('trim', explode(',', $product->color)) : [];
+                            $sizes  = $product->size ? array_map('trim', explode(',', $product->size)) : [];
+                        @endphp
 
-                            </span>
+                        {{-- COLOR SELECTION --}}
+                        @if(count($colors) > 0)
+                            <div class="mb-8">
+                                <h3 class="text-sm font-medium text-[#2d312b] uppercase tracking-[2px] mb-4">Warna</h3>
+                                <div class="flex flex-wrap gap-3" id="color-buttons">
+                                    @foreach($colors as $color)
+                                        @if($color)
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="color" value="{{ $color }}" class="hidden peer color-radio" required onchange="checkVariant()">
+                                            <div class="px-6 py-3 rounded-full border border-[#dce3d8] text-xs uppercase tracking-[1px] text-[#55624d] font-medium
+                                                        transition-all duration-300
+                                                        group-hover:border-[#55624d]
+                                                        peer-checked:bg-[#55624d] peer-checked:text-white peer-checked:border-[#55624d] shadow-sm">
+                                                {{ $color }}
+                                            </div>
+                                        </label>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
 
+                        {{-- SIZE SELECTION --}}
+                        @if(count($sizes) > 0)
+                            <div class="mb-8">
+                                <h3 class="text-sm font-medium text-[#2d312b] uppercase tracking-[2px] mb-4 flex items-center justify-between">
+                                    Ukuran
+                                    <span class="text-[10px] text-[#7b8870] underline cursor-pointer hover:text-[#55624d]">Size Guide</span>
+                                </h3>
+                                <div class="flex flex-wrap gap-3" id="size-buttons">
+                                    @foreach($sizes as $size)
+                                        @if($size)
+                                        <label class="cursor-pointer group">
+                                            <input type="radio" name="size" value="{{ $size }}" class="hidden peer size-radio" required onchange="checkVariant()">
+                                            <div class="min-w-[48px] px-3 h-12 flex items-center justify-center rounded-full border border-[#dce3d8] text-sm uppercase text-[#55624d] font-medium
+                                                        transition-all duration-300
+                                                        group-hover:border-[#55624d]
+                                                        peer-checked:bg-[#55624d] peer-checked:text-white peer-checked:border-[#55624d] shadow-sm">
+                                                {{ $size }}
+                                            </div>
+                                        </label>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                {{-- STOK DISPLAY --}}
+                                <div id="stock-info" class="mt-4 hidden">
+                                    <p id="stock-label" class="text-xs font-medium"></p>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- QUANTITY & STOCK --}}
+                        <div class="mb-10">
+                            <h3 class="text-sm font-medium text-[#2d312b] uppercase tracking-[2px] mb-4 flex items-center gap-3">
+                                Jumlah
+                                <span id="total-stock-badge"
+                                      class="{{ $product->stock <= 5 && $product->stock > 0 ? 'bg-red-100 text-red-600' : 'bg-[#edf1eb] text-[#55624d]' }} text-[9px] px-2 py-0.5 rounded-full font-bold">
+                                    STOK: {{ $product->stock }}
+                                </span>
+                            </h3>
+                            
+                            <div class="flex items-center w-fit border border-[#dce3d8] rounded-full overflow-hidden bg-white shadow-sm">
+                                <button type="button" onclick="decreaseQty()" class="w-12 h-12 flex items-center justify-center text-[#55624d] hover:bg-[#edf1eb] transition">
+                                    <i class="bi bi-dash text-xl"></i>
+                                </button>
+                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ $product->stock }}" readonly
+                                       class="w-14 text-center border-none focus:ring-0 text-[#2d312b] font-medium p-0 bg-transparent">
+                                <button type="button" onclick="increaseQty()" class="w-12 h-12 flex items-center justify-center text-[#55624d] hover:bg-[#edf1eb] transition">
+                                    <i class="bi bi-plus text-xl"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- FORM -->
-                        <form method="POST">
-
-                            @csrf
-
-                            <input type="hidden"
-                                   name="product_id"
-                                   value="{{ $product->id }}">
-
-                            <!-- SIZE -->
-                            <div class="mt-12">
-
-                                <h3 class="font-semibold
-                                           text-xl
-                                           text-[#2d312b]
-                                           mb-5">
-
-                                    Pilih Size
-
-                                </h3>
-
-                                <div class="flex gap-4 flex-wrap">
-
-                                    @if($product->size)
-
-                                        @foreach(explode(',', $product->size) as $size)
-
-                                            <label>
-
-                                                <input type="radio"
-                                                       name="size"
-                                                       value="{{ trim($size) }}"
-                                                       class="hidden peer"
-                                                       required>
-
-                                                <div class="px-7 py-4
-                                                            rounded-2xl
-                                                            border border-[#d7ddd2]
-                                                            bg-white
-                                                            text-[#2d312b]
-                                                            font-semibold
-                                                            cursor-pointer
-                                                            hover:border-[#55624d]
-                                                            peer-checked:bg-[#55624d]
-                                                            peer-checked:text-white
-                                                            transition">
-
-                                                    {{ trim($size) }}
-
-                                                </div>
-
-                                            </label>
-
-                                        @endforeach
-
-                                    @endif
-
-                                </div>
-
-                            </div>
-
-                            <!-- COLOR -->
-                            <div class="mt-12">
-
-                                <h3 class="font-semibold
-                                           text-xl
-                                           text-[#2d312b]
-                                           mb-5">
-
-                                    Pilih Warna
-
-                                </h3>
-
-                                <div class="flex gap-4 flex-wrap">
-
-                                    @if($product->color)
-
-                                        @foreach(explode(',', $product->color) as $color)
-
-                                            <label>
-
-                                                <input type="radio"
-                                                       name="color"
-                                                       value="{{ trim($color) }}"
-                                                       class="hidden peer"
-                                                       required>
-
-                                                <div class="px-7 py-4
-                                                            rounded-2xl
-                                                            border border-[#d7ddd2]
-                                                            bg-white
-                                                            text-[#2d312b]
-                                                            font-semibold
-                                                            cursor-pointer
-                                                            hover:border-[#55624d]
-                                                            peer-checked:bg-[#55624d]
-                                                            peer-checked:text-white
-                                                            transition">
-
-                                                    {{ trim($color) }}
-
-                                                </div>
-
-                                            </label>
-
-                                        @endforeach
-
-                                    @endif
-
-                                </div>
-
-                            </div>
-
-                            <!-- QUANTITY -->
-                            <div class="mt-12">
-
-                                <h3 class="font-semibold
-                                           text-xl
-                                           text-[#2d312b]
-                                           mb-5">
-
-                                    Quantity
-
-                                </h3>
-
-                                <div class="flex items-center
-                                            w-fit
-                                            rounded-2xl
-                                            overflow-hidden
-                                            border border-[#d7ddd2]
-                                            shadow-sm">
-
-                                    <!-- MINUS -->
-                                    <button type="button"
-                                            onclick="decreaseQty()"
-                                            class="w-16 h-16
-                                                   bg-[#edf1ed]
-                                                   hover:bg-[#dfe4d8]
-                                                   text-3xl
-                                                   text-[#2d312b]
-                                                   transition">
-
-                                        −
-
-                                    </button>
-
-                                    <!-- INPUT -->
-                                    <input type="number"
-                                           id="quantity"
-                                           name="quantity"
-                                           value="1"
-                                           min="1"
-                                           max="{{ $product->stock }}"
-                                           readonly
-                                           class="w-24
-                                                  text-center
-                                                  border-0
-                                                  focus:ring-0
-                                                  text-2xl
-                                                  font-bold
-                                                  text-[#2d312b]">
-
-                                    <!-- PLUS -->
-                                    <button type="button"
-                                            onclick="increaseQty()"
-                                            class="w-16 h-16
-                                                   bg-[#edf1ed]
-                                                   hover:bg-[#dfe4d8]
-                                                   text-3xl
-                                                   text-[#2d312b]
-                                                   transition">
-
-                                        +
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                            <!-- DESCRIPTION -->
-                            <div class="mt-12">
-
-                                <h3 class="font-semibold
-                                           text-xl
-                                           text-[#2d312b]
-                                           mb-4">
-
-                                    Description
-
-                                </h3>
-
-                                <p class="text-[#6d7568]
-                                          leading-relaxed
-                                          text-lg">
-
-                                    {{ $product->description }}
-
-                                </p>
-
-                            </div>
-
-                            <!-- BUTTON -->
-                            <div class="mt-14 flex flex-wrap gap-5">
-
-                                <!-- ADD TO CART -->
-                                <button type="submit"
-                                        formaction="/cart"
-                                        formmethod="POST"
-                                        class="bg-[#55624d]
-                                               hover:bg-[#40483a]
-                                               text-white
-                                               px-10 py-5
-                                               rounded-2xl
-                                               font-semibold
-                                               text-lg
-                                               shadow-lg
-                                               transition">
-
-                                    Add To Cart
-
+                        {{-- ACTION BUTTONS --}}
+                        <div class="flex flex-col sm:flex-row gap-4 mb-10">
+                            
+                            @auth
+                                <button type="submit" formaction="{{ route('cart.store') }}" formmethod="POST"
+                                        class="flex-1 bg-white border border-[#55624d] text-[#55624d] py-4 rounded-full text-xs font-semibold uppercase tracking-[2px] shadow-sm hover:bg-[#edf1eb] transition-all flex items-center justify-center gap-2">
+                                    <i class="bi bi-cart-plus text-lg"></i>
+                                    Add to Cart
                                 </button>
 
-                                <!-- BUY NOW -->
-                                <button type="submit"
-                                        formaction="{{ route('checkout.direct') }}"
-                                        formmethod="POST"
-                                        class="bg-black
-                                               hover:bg-gray-800
-                                               text-white
-                                               px-10 py-5
-                                               rounded-2xl
-                                               font-semibold
-                                               text-lg
-                                               shadow-lg
-                                               transition">
-
+                                <button type="submit" formaction="{{ route('checkout.direct') }}" formmethod="POST"
+                                        class="flex-1 bg-[#55624d] text-white py-4 rounded-full text-xs font-semibold uppercase tracking-[2px] shadow-[0_10px_20px_rgba(85,98,77,0.3)] hover:bg-[#40483a] hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                                    <i class="bi bi-bag text-lg"></i>
                                     Buy Now
-
                                 </button>
 
+                                {{-- FAVORITE BUTTON --}}
+                                <button type="submit" formaction="{{ route('favorite.store') }}" formmethod="POST" formnovalidate
+                                        class="w-12 h-12 sm:w-auto sm:h-auto sm:px-6 flex-none bg-[#f8faf7] border border-[#dce3d8] text-[#55624d] rounded-full flex items-center justify-center hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm" title="Add to Wishlist">
+                                    <i class="bi bi-heart text-xl"></i>
+                                </button>
+                            @else
+                                <a href="{{ route('login') }}" 
+                                   class="flex-1 bg-[#55624d] text-white py-4 rounded-full text-xs font-semibold uppercase tracking-[2px] text-center hover:bg-[#40483a] transition-all shadow-md">
+                                    Login to Buy
+                                </a>
+                            @endauth
+                            
+                        </div>
+
+                    </form>
+
+                    {{-- DESCRIPTION ACCORDION --}}
+                    <div class="border-t border-[#e4eae0] pt-8">
+                        <div class="group">
+                            <h3 class="text-sm font-medium text-[#2d312b] uppercase tracking-[2px] flex items-center justify-between cursor-pointer mb-4">
+                                Deskripsi Produk
+                                <i class="bi bi-chevron-down text-[#7b8870] group-hover:text-[#55624d] transition-colors"></i>
+                            </h3>
+                            <div class="text-[#6d7568] text-sm leading-relaxed font-light whitespace-pre-line pr-4 pb-4">
+                                {{ $product->description }}
                             </div>
-
-                        </form>
-
-                        <!-- FAVORITE -->
-                        <form action="/favorite"
-                              method="POST"
-                              class="mt-5">
-
-                            @csrf
-
-                            <input type="hidden"
-                                   name="product_id"
-                                   value="{{ $product->id }}">
-
-                            <button type="submit"
-                                    class="border border-[#55624d]
-                                           text-[#55624d]
-                                           hover:bg-[#55624d]
-                                           hover:text-white
-                                           px-8 py-4
-                                           rounded-2xl
-                                           font-semibold
-                                           transition">
-
-                                <i class="bi bi-heart mr-2"></i>
-
-                                Favorite
-
-                            </button>
-
-                        </form>
-
+                        </div>
                     </div>
 
                 </div>
@@ -520,36 +192,82 @@
 
     </div>
 
-    <!-- SCRIPT -->
-    <script>
+</div>
 
-        function increaseQty() {
+@endsection
 
-            let qtyInput = document.getElementById('quantity');
+@section('scripts')
+<script>
+    function increaseQty() {
+        let qtyInput = document.getElementById('quantity');
+        let current = parseInt(qtyInput.value);
+        let max = parseInt(qtyInput.max);
+        if (current < max) {
+            qtyInput.value = current + 1;
+        }
+    }
 
-            let current = parseInt(qtyInput.value);
+    function decreaseQty() {
+        let qtyInput = document.getElementById('quantity');
+        let current = parseInt(qtyInput.value);
+        if (current > 1) {
+            qtyInput.value = current - 1;
+        }
+    }
 
-            let max = parseInt(qtyInput.max);
+    function updateStock(stock) {
+        const qtyInput = document.getElementById('quantity');
+        const stockInfo = document.getElementById('stock-info');
+        const stockLabel = document.getElementById('stock-label');
+        const badge = document.getElementById('total-stock-badge');
 
-            if (current < max) {
+        // Update quantity input max
+        qtyInput.max = stock;
+        qtyInput.value = 1;
 
-                qtyInput.value = current + 1;
+        // Show stock info
+        stockInfo.classList.remove('hidden');
+
+        if (stock === 0) {
+            stockLabel.textContent = 'Ukuran ini habis terjual';
+            stockLabel.className = 'text-xs font-medium text-red-500';
+            badge.textContent = 'HABIS';
+            badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-bold bg-red-100 text-red-600';
+        } else if (stock <= 5) {
+            stockLabel.textContent = `Sisa ${stock} item untuk ukuran ini!`;
+            stockLabel.className = 'text-xs font-medium text-orange-500';
+            badge.textContent = `SISA: ${stock}`;
+            badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-bold bg-orange-100 text-orange-600';
+        } else {
+            stockLabel.textContent = `Stok tersedia: ${stock} item`;
+            stockLabel.className = 'text-xs font-medium text-[#55624d]';
+            badge.textContent = `STOK: ${stock}`;
+            badge.className = 'text-[9px] px-2 py-0.5 rounded-full font-bold bg-[#edf1eb] text-[#55624d]';
+        }
+    }
+
+    const variants = @json($product->variants);
+
+    function checkVariant() {
+        const colorInput = document.querySelector('input[name="color"]:checked');
+        const sizeInput = document.querySelector('input[name="size"]:checked');
+        
+        const stockInfo = document.getElementById('stock-info');
+        const stockLabel = document.getElementById('stock-label');
+        
+        if (variants && variants.length > 0 && colorInput && sizeInput) {
+            const selectedColor = colorInput.value;
+            const selectedSize = sizeInput.value;
+            
+            const variant = variants.find(v => v.color === selectedColor && v.size === selectedSize);
+            
+            if (variant) {
+                updateStock(variant.stock);
+            } else {
+                updateStock(0); // Kombinasi tidak tersedia
+                stockLabel.textContent = 'Kombinasi warna dan ukuran ini tidak tersedia';
             }
         }
-
-        function decreaseQty() {
-
-            let qtyInput = document.getElementById('quantity');
-
-            let current = parseInt(qtyInput.value);
-
-            if (current > 1) {
-
-                qtyInput.value = current - 1;
-            }
-        }
-
-    </script>
-
-</body>
-</html>
+    }
+</script>
+@endsection

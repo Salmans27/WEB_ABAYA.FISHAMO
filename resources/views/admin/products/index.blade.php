@@ -16,7 +16,7 @@
 
             </p>
 
-            <h1 class="text-5xl font-light text-[#2d312b]">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-light text-[#2d312b]">
 
                 Products
                 <span class="font-semibold">
@@ -37,8 +37,9 @@
            class="bg-[#55624d]
                   hover:bg-[#40483a]
                   text-white
-                  px-8 py-4
-                  rounded-2xl
+                  px-6 py-3 sm:px-8 sm:py-4
+                  rounded-xl sm:rounded-2xl
+                  text-sm sm:text-base
                   font-semibold
                   shadow-lg
                   transition">
@@ -53,20 +54,23 @@
 
 <!-- PRODUCTS TABLE -->
 <div class="bg-white
-            rounded-[35px]
-            overflow-hidden
+            rounded-2xl sm:rounded-[35px]
+            overflow-x-auto
             border border-[#dfe4db]
             shadow-[0_10px_35px_rgba(0,0,0,0.05)]">
+    
+    <div class="min-w-[900px]">
 
     <!-- TABLE HEADER -->
     <div class="grid
                 grid-cols-12
                 bg-[#cfd5cd]
                 text-[#2d312b]
+                text-sm sm:text-base
                 font-semibold
-                px-8 py-6">
+                px-4 sm:px-8 py-4 sm:py-6">
 
-        <div class="col-span-5">
+        <div class="col-span-4">
             Produk
         </div>
 
@@ -78,7 +82,7 @@
             Kategori
         </div>
 
-        <div class="col-span-1">
+        <div class="col-span-2">
             Stock
         </div>
 
@@ -94,23 +98,23 @@
         <div class="grid
                     grid-cols-12
                     items-center
-                    px-8 py-8
+                    px-4 sm:px-8 py-4 sm:py-8
                     border-t border-[#ecefea]">
 
             <!-- PRODUCT -->
-            <div class="col-span-5 flex gap-6">
+            <div class="col-span-4 flex gap-6">
 
                 <img src="{{ asset('storage/' . $product->image) }}"
-                     class="w-32 h-40
+                     class="w-20 h-28 sm:w-32 sm:h-40
                             object-cover
-                            rounded-2xl
-                            shadow-md">
+                            rounded-xl sm:rounded-2xl
+                            shadow-md shrink-0">
 
                 <div>
 
-                    <h2 class="text-3xl
+                    <h2 class="text-lg sm:text-xl md:text-3xl
                                font-semibold
-                               text-[#2d312b]">
+                               text-[#2d312b] line-clamp-2">
 
                         {{ $product->name }}
 
@@ -120,10 +124,10 @@
                         #{{ $product->id }}
                     </p>
 
-                    <p class="text-[#6f776b]
-                              mt-5
-                              leading-9
-                              max-w-xl">
+                    <p class="text-xs sm:text-sm text-[#6f776b]
+                              mt-2 sm:mt-5
+                              leading-relaxed sm:leading-9
+                              max-w-xl line-clamp-2 sm:line-clamp-none">
 
                         {{ Str::limit($product->description, 150) }}
 
@@ -136,9 +140,9 @@
             <!-- PRICE -->
             <div class="col-span-2">
 
-                <h3 class="text-4xl
+                <h3 class="text-base sm:text-lg md:text-2xl
                            font-semibold
-                           text-[#1fa34a]">
+                           text-emerald-600">
 
                     Rp {{ number_format($product->price) }}
 
@@ -151,9 +155,9 @@
 
                 <span class="bg-[#e7ebe4]
                              text-[#2f312e]
-                             px-5 py-3
-                             rounded-2xl
-                             font-semibold">
+                             px-3 sm:px-5 py-1.5 sm:py-3
+                             rounded-lg sm:rounded-2xl
+                             text-xs sm:text-sm font-semibold">
 
                     {{ $product->category }}
 
@@ -162,17 +166,25 @@
             </div>
 
             <!-- STOCK -->
-            <div class="col-span-1">
+            <div class="col-span-2 flex flex-col gap-1 items-start">
+                
+                @if($product->variants && $product->variants->count() > 0)
+                    @foreach($product->variants as $variant)
+                        <span class="bg-[#cdeccf] text-[#26733b] px-2 py-1 rounded-md text-[10px] sm:text-xs font-semibold whitespace-nowrap border border-[#26733b]/20">
+                            {{ $variant->color }} - {{ $variant->size }}: {{ $variant->stock }}
+                        </span>
+                    @endforeach
+                @else
+                    <span class="bg-[#cdeccf]
+                                 text-[#26733b]
+                                 px-3 py-1.5
+                                 rounded-lg
+                                 text-xs font-semibold">
 
-                <span class="bg-[#cdeccf]
-                             text-[#26733b]
-                             px-5 py-3
-                             rounded-2xl
-                             font-semibold">
+                        {{ $product->stock }} pcs
 
-                    {{ $product->stock }} pcs
-
-                </span>
+                    </span>
+                @endif
 
             </div>
 
@@ -186,9 +198,9 @@
                        class="bg-[#facc15]
                               hover:bg-yellow-400
                               text-white
-                              px-6 py-3
-                              rounded-2xl
-                              font-semibold
+                              px-3 sm:px-6 py-2 sm:py-3
+                              rounded-lg sm:rounded-2xl
+                              text-xs sm:text-sm font-semibold
                               shadow">
 
                         Edit
@@ -207,9 +219,9 @@
                                 class="bg-[#ef4444]
                                        hover:bg-red-500
                                        text-white
-                                       px-6 py-3
-                                       rounded-2xl
-                                       font-semibold
+                                       px-3 sm:px-6 py-2 sm:py-3
+                                       rounded-lg sm:rounded-2xl
+                                       text-xs sm:text-sm font-semibold
                                        shadow">
 
                             Delete
@@ -238,6 +250,7 @@
 
     @endforelse
 
+    </div>
 </div>
 
 @endsection

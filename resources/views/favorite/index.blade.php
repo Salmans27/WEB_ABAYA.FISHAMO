@@ -1,311 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.store')
 
-    <title>Favorite Products</title>
+@section('title', 'Favorit Saya — Abaya Fishamo')
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@section('content')
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-10 sm:py-16 md:py-24">
 
-</head>
-
-<body class="bg-[#edf1ed]">
-
-    <!-- TOP BAR -->
-    <div class="bg-gradient-to-r
-                from-[#55624d]
-                via-[#6b7862]
-                to-[#55624d]
-                text-white text-center
-                py-3
-                text-[10px] md:text-sm
-                tracking-[5px]">
-
-        FREE SHIPPING ACROSS INDONESIA ON ORDERS OVER Rp 500.000
-
+    {{-- HEADING --}}
+    <div class="flex flex-col items-center mb-16">
+        <p class="text-[10px] md:text-xs tracking-[4px] text-[#7b8870] uppercase font-bold mb-4">My Wishlist</p>
+        <h1 class="text-2xl sm:text-3xl md:text-5xl font-light text-[#2d312b] tracking-[2px] sm:tracking-[4px] uppercase mb-4 text-center">Favorit Saya</h1>
+        <div class="w-12 h-[1px] bg-[#55624d]"></div>
     </div>
 
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50
-                bg-[#edf1eb]/95
-                backdrop-blur-md
-                border-b border-[#d8ddd3]
-                shadow-sm">
+    @if($favorites->count() > 0)
+        
+        {{-- GRID --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-8 gap-y-8 sm:gap-y-16">
+            
+            @foreach($favorites as $favorite)
+                <div class="group relative flex flex-col">
+                    
+                    {{-- IMAGE --}}
+                    <a href="{{ route('products.show', $favorite->product->id) }}" class="block relative overflow-hidden bg-[#f4f4f4] aspect-[3/4] mb-3 sm:mb-6">
+                        @if($favorite->product->image)
+                            <img src="{{ asset('storage/' . $favorite->product->image) }}" alt="{{ $favorite->product->name }}" 
+                                 class="w-full h-full object-cover object-center transition-transform duration-[1.5s] group-hover:scale-105">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                <i class="bi bi-image text-3xl"></i>
+                            </div>
+                        @endif
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="flex items-center justify-between h-20 md:h-24">
-
-                <!-- LEFT -->
-                <div class="flex items-center gap-12">
-
-                    <!-- LOGO -->
-                    <a href="/dashboard"
-                       class="flex items-center gap-4">
-
-                        <img
-                            src="{{ asset('images/logo.png') }}"
-                            alt="Abaya Fishamo"
-                            class="w-14 h-20
-                                   object-cover
-                                   rounded-[30px]">
-
-                        <div>
-
-                            <h1 class="text-2xl md:text-3xl
-                                       font-semibold
-                                       text-[#2d312b]">
-
-                                Abaya Fishamo
-
-                            </h1>
-
-                            <p class="text-[#7c8477] text-sm">
-                                User Panel
-                            </p>
-
+                        {{-- Hover Overlay --}}
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        {{-- Quick Remove Button --}}
+                        <div class="absolute top-4 right-4 z-10">
+                            <form action="/favorite/{{ $favorite->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white text-[#55624d] flex items-center justify-center shadow-md hover:bg-red-50 hover:text-red-500 transition-colors" title="Hapus dari Favorit">
+                                    <i class="bi bi-heartbreak"></i>
+                                </button>
+                            </form>
                         </div>
-
                     </a>
 
-                    <!-- MENU -->
-                    <a href="/dashboard"
-                       class="text-[#2d312b]
-                              font-semibold
-                              text-lg
-                              hover:text-black
-                              transition">
-
-                        Dashboard
-
-                    </a>
-
-                </div>
-
-                <!-- RIGHT -->
-                <div class="flex items-center gap-4">
-
-
-                   <!-- CART -->
-                <a href="/cart"
-                   class="px-5 py-3
-                          rounded-2xl
-                          bg-white
-                          shadow-md
-                          flex items-center gap-3
-                          text-[#2f312e]
-                          font-semibold">
-
-                    <i class="bi bi-handbag-fill"></i>
-                    Cart
-
-                </a>
-
-                    <!-- PROFILE -->
-                    <div class="flex items-center gap-3
-                                bg-white
-                                px-4 py-2
-                                rounded-full
-                                shadow-md
-                                border border-[#d8ddd3]">
-
-                        <img
-                            src="{{ asset('storage/' . auth()->user()->photo) }}"
-                            alt="Profile"
-                            class="w-12 h-12 rounded-full object-cover">
-
-                        <div class="hidden md:block">
-
-                            <p class="text-xs text-gray-500">
-                                Welcome
-                            </p>
-
-                            <p class="font-semibold text-[#2f312e]">
-                                {{ auth()->user()->name }}
-                            </p>
-
+                    {{-- INFO --}}
+                    <div class="text-center md:text-left flex flex-col flex-1">
+                        <a href="{{ route('products.show', $favorite->product->id) }}">
+                            <h3 class="text-xs sm:text-sm font-medium text-[#2d312b] tracking-[1px] line-clamp-1 mb-1 sm:mb-2 group-hover:text-[#55624d] transition-colors">
+                                {{ $favorite->product->name }}
+                            </h3>
+                        </a>
+                        
+                        <div class="mt-auto">
+                            <p class="text-xs sm:text-sm text-[#7b8870] tracking-[1px]">IDR {{ number_format($favorite->product->price) }}</p>
                         </div>
+                    </div>
 
-                        <i class="bi bi-chevron-down text-gray-600"></i>
-
+                    {{-- ACTIONS --}}
+                    <div class="mt-6 flex flex-col gap-3">
+                        <a href="{{ route('products.show', $favorite->product->id) }}" 
+                           class="w-full bg-transparent border border-[#55624d] text-[#55624d] py-3 text-center text-[10px] md:text-xs uppercase tracking-[2px] font-semibold hover:bg-[#55624d] hover:text-white transition-colors">
+                            Lihat Produk
+                        </a>
                     </div>
 
                 </div>
-
-            </div>
-
-        </div>
-
-    </nav>
-
-    <!-- CONTENT -->
-    <div class="min-h-screen py-12">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <!-- TITLE -->
-            <div class="mb-12">
-
-                <h1 class="text-5xl md:text-6xl
-                           font-light
-                           text-[#2f312e]">
-
-                    Favorite Products
-
-                </h1>
-
-                <p class="text-[#7c8477]
-                          mt-4
-                          text-lg">
-
-                    Produk favorite pilihan kamu
-
-                </p>
-
-            </div>
-
-            @if($favorites->count() > 0)
-
-                <!-- GRID -->
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                    @foreach($favorites as $favorite)
-
-                        <div class="bg-white
-                                    rounded-[32px]
-                                    overflow-hidden
-                                    shadow-xl
-                                    hover:-translate-y-1
-                                    transition duration-300">
-
-                            <!-- IMAGE -->
-                            <div class="relative overflow-hidden">
-
-                                @if($favorite->product->image)
-
-                                    <img src="{{ asset('storage/' . $favorite->product->image) }}"
-                                         class="w-full
-                                                h-[340px]
-                                                object-cover
-                                                hover:scale-105
-                                                transition duration-500">
-
-                                @endif
-
-                            </div>
-
-                            <!-- CONTENT -->
-                            <div class="p-6">
-
-                                <h2 class="text-2xl
-                                           font-semibold
-                                           text-[#2f312e]">
-
-                                    {{ $favorite->product->name }}
-
-                                </h2>
-
-                                <p class="text-[#55624d]
-                                          text-2xl
-                                          font-bold
-                                          mt-4">
-
-                                    Rp {{ number_format($favorite->product->price) }}
-
-                                </p>
-
-                                <!-- BUTTON -->
-                                <div class="mt-6 flex flex-col gap-3">
-
-                                    <a href="/products/{{ $favorite->product->id }}"
-                                       class="w-full
-                                              bg-[#55624d]
-                                              hover:bg-[#40483a]
-                                              text-white
-                                              text-center
-                                              py-4
-                                              rounded-2xl
-                                              font-semibold
-                                              transition">
-
-                                        View Product
-
-                                    </a>
-
-                                    <form action="/favorite/{{ $favorite->id }}"
-                                          method="POST">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button class="w-full
-                                                       bg-red-500
-                                                       hover:bg-red-600
-                                                       text-white
-                                                       py-4
-                                                       rounded-2xl
-                                                       font-semibold
-                                                       transition">
-
-                                            Hapus Favorite
-
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    @endforeach
-
-                </div>
-
-            @else
-
-                <!-- EMPTY -->
-                <div class="bg-white
-                            rounded-[32px]
-                            shadow-xl
-                            py-24
-                            text-center">
-
-                    <i class="bi bi-heart
-                              text-7xl
-                              text-[#c2c8bc]"></i>
-
-                    <h2 class="text-4xl
-                               font-semibold
-                               text-[#9aa39a]
-                               mt-8">
-
-                        Belum Ada Favorite
-
-                    </h2>
-
-                    <p class="text-[#a6ada2]
-                              mt-4
-                              text-lg">
-
-                        Tambahkan produk favorite kamu
-
-                    </p>
-
-                </div>
-
-            @endif
+            @endforeach
 
         </div>
 
-    </div>
+    @else
+        
+        {{-- EMPTY STATE --}}
+        <div class="py-24 text-center flex flex-col items-center max-w-lg mx-auto">
+            <div class="w-24 h-24 mb-8 text-[#d8ddd3] flex items-center justify-center">
+                <i class="bi bi-heart text-6xl md:text-7xl"></i>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-light text-[#2d312b] tracking-[2px] mb-4">Belum Ada Favorit</h2>
+            <p class="text-sm text-[#7b8870] mb-10 leading-relaxed">
+                Anda belum menambahkan produk apa pun ke daftar favorit Anda. Temukan koleksi terbaik kami dan simpan yang paling Anda sukai.
+            </p>
+            <a href="{{ route('dashboard') }}" class="bg-[#55624d] text-white px-10 py-4 text-xs md:text-sm uppercase tracking-[3px] font-semibold hover:bg-[#40483a] transition-colors">
+                Mulai Belanja
+            </a>
+        </div>
 
-</body>
-</html>
+    @endif
 
+</section>
+
+@endsection

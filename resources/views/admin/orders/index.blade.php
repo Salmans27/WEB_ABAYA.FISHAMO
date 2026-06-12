@@ -2,9 +2,9 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="max-w-7xl mx-auto py-10">
+<div class="max-w-7xl mx-auto py-6 sm:py-10">
 
-    <h1 class="text-4xl font-light mb-8 text-[#2f312e]">
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-light mb-6 sm:mb-8 text-[#2f312e]">
         Orders Management
     </h1>
 
@@ -12,14 +12,14 @@
 
         @forelse($orders as $order)
 
-            <div class="bg-white rounded-[30px] p-8 shadow border border-[#e1e5dd]">
+            <div class="bg-white rounded-2xl sm:rounded-[30px] p-4 sm:p-6 md:p-8 shadow border border-[#e1e5dd]">
 
                 <!-- HEADER -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 
                     <div>
 
-                        <h2 class="text-2xl font-semibold text-[#55624d]">
+                        <h2 class="text-xl sm:text-2xl font-semibold text-[#55624d]">
                             {{ $order->customer_name }}
                         </h2>
 
@@ -33,13 +33,13 @@
 
                     </div>
 
-                    <div class="text-right">
+                    <div class="text-left md:text-right">
 
                         <p class="text-sm text-gray-500">
                             Total Item
                         </p>
 
-                        <p class="text-2xl font-semibold text-[#55624d]">
+                        <p class="text-xl sm:text-2xl font-semibold text-[#55624d]">
                             {{ $order->total_item }}
                         </p>
 
@@ -47,7 +47,7 @@
                             Total Price
                         </p>
 
-                        <p class="text-3xl font-bold text-[#55624d]">
+                        <p class="text-xl sm:text-2xl md:text-3xl font-bold text-[#55624d]">
                             Rp {{ number_format($order->total_price) }}
                         </p>
 
@@ -60,7 +60,7 @@
 
                     @foreach($order->items as $item)
 
-                        <div class="flex flex-col md:flex-row gap-6 border-t pt-6">
+                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 border-t pt-4 sm:pt-6">
 
                             <!-- IMAGE -->
                             <div>
@@ -69,11 +69,11 @@
 
                                     <img
                                         src="{{ asset('storage/' . $item->product->image) }}"
-                                        class="w-32 h-32 object-cover rounded-2xl">
+                                        class="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-2xl">
 
                                 @else
 
-                                    <div class="w-32 h-32 bg-gray-200 rounded-2xl"></div>
+                                    <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gray-200 rounded-2xl"></div>
 
                                 @endif
 
@@ -82,11 +82,11 @@
                             <!-- DETAIL -->
                             <div class="flex-1">
 
-                                <h3 class="text-2xl font-semibold text-[#2f312e]">
+                                <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-[#2f312e]">
                                     {{ $item->product->name ?? 'Product Deleted' }}
                                 </h3>
 
-                                <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
 
                                     <div>
                                         <p class="text-sm text-gray-500">
@@ -177,7 +177,7 @@
 
     </div>
 
-    @if($order->proof)
+    @if($order->payment && $order->payment->proof)
 
 <div class="mt-6">
 
@@ -185,10 +185,10 @@
         Bukti Pembayaran
     </p>
 
-    <a href="{{ asset('storage/' . $order->proof) }}"
+    <a href="{{ asset('storage/' . $order->payment->proof) }}"
        target="_blank">
 
-        <img src="{{ asset('storage/' . $order->proof) }}"
+        <img src="{{ asset('storage/' . $order->payment->proof) }}"
              class="w-40 rounded-2xl border shadow">
 
     </a>
@@ -201,14 +201,14 @@
     <form
         action="{{ route('admin.orders.status', $order->id) }}"
         method="POST"
-        class="flex gap-3 items-center">
+        class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
 
         @csrf
         @method('PUT')
 
         <select
             name="status"
-            class="rounded-2xl border-[#d7ddd2]">
+            class="w-full sm:w-auto rounded-2xl border-[#d7ddd2] text-sm sm:text-base">
 
             <option value="pending">Pending</option>
 
@@ -239,6 +239,7 @@
             class="bg-[#55624d]
                    hover:bg-[#40483a]
                    text-white
+                   w-full sm:w-auto
                    px-6 py-3
                    rounded-2xl
                    font-semibold
@@ -258,9 +259,9 @@
 
         @empty
 
-            <div class="bg-white rounded-[30px] p-10 text-center shadow">
+            <div class="bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-10 text-center shadow">
 
-                <h2 class="text-2xl text-gray-500">
+                <h2 class="text-xl sm:text-2xl text-gray-500">
                     Belum ada pesanan
                 </h2>
 
