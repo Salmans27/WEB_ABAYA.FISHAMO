@@ -13,7 +13,7 @@
 
     <video autoplay muted loop playsinline
            class="absolute inset-0 w-full h-full object-cover">
-        <source src="{{ asset('videos/luxury.mp4') }}" type="video/mp4">
+        <source src="{{ asset('videos/luxury 1.mp4') }}" type="video/mp4">
     </video>
 
     {{-- OVERLAY --}}
@@ -22,28 +22,28 @@
     {{-- HERO TEXT --}}
     <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
 
-        <p class="tracking-[3px] sm:tracking-[6px] text-white/80 text-[10px] md:text-xs mb-3 md:mb-4 uppercase font-medium">
+        <p class="tracking-[3px] sm:tracking-[6px] text-[#7b8870] text-[10px] md:text-xs mb-3 md:mb-4 uppercase font-medium">
             New Collection 2026
         </p>
 
-        <h1 class="text-3xl sm:text-4xl md:text-7xl font-extralight tracking-[5px] sm:tracking-[10px] md:tracking-[16px] text-white uppercase leading-none">
+        <h1 class="text-3xl sm:text-4xl md:text-7xl font-extralight tracking-[5px] sm:tracking-[10px] md:tracking-[16px] text-[#55624d] uppercase leading-none">
             ABAYA <br class="md:hidden"> FISHAMO
         </h1>
 
-        <p class="mt-6 text-white/80 text-xs md:text-sm max-w-md leading-relaxed font-light tracking-[1px]">
+        <p class="mt-6 text-[#7b8870] text-xs md:text-sm max-w-md leading-relaxed font-light tracking-[1px]">
             Discover timeless modest fashion designed with luxury and elegance.
         </p>
 
         <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-6 sm:mt-10 w-full sm:w-auto px-4 sm:px-0">
 
             <a href="#products"
-               class="px-8 sm:px-10 py-3 sm:py-4 bg-white text-[#55624d] font-semibold uppercase tracking-[2px] sm:tracking-[3px] text-[10px] md:text-xs hover:bg-[#edf1eb] transition-colors duration-500 w-full sm:w-auto text-center">
+               class="px-8 sm:px-10 py-3 sm:py-4 bg-[#55624d] text-white font-semibold uppercase tracking-[2px] sm:tracking-[3px] text-[10px] md:text-xs hover:bg-[#3d4637] transition-colors duration-500 w-full sm:w-auto text-center">
                 Explore Collection
             </a>
 
             @guest
                 <a href="{{ route('register') }}"
-                   class="px-8 sm:px-10 py-3 sm:py-4 border border-white text-white font-semibold uppercase tracking-[2px] sm:tracking-[3px] text-[10px] md:text-xs hover:bg-white hover:text-[#55624d] transition-colors duration-500 w-full sm:w-auto text-center">
+                   class="px-8 sm:px-10 py-3 sm:py-4 border border-[#55624d] text-[#55624d] font-semibold uppercase tracking-[2px] sm:tracking-[3px] text-[10px] md:text-xs hover:bg-[#55624d] hover:text-white transition-colors duration-500 w-full sm:w-auto text-center">
                     Join Us
                 </a>
             @endguest
@@ -53,7 +53,7 @@
     </div>
 
     {{-- SCROLL INDICATOR --}}
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#7b8870]">
         <p class="text-[9px] tracking-[4px] uppercase font-semibold">Scroll</p>
         <i class="bi bi-chevron-down text-lg animate-bounce"></i>
     </div>
@@ -89,17 +89,11 @@
                             </div>
                         @endif
 
-                        {{-- Hover Overlay --}}
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
                         
-                        {{-- View Details Quick Action --}}
-                        <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 hidden md:block">
-                            <button type="button" onclick="window.location='{{ route('products.show', $product->id) }}'" 
-                                    class="w-full bg-white text-[#55624d] py-3 text-[10px] uppercase tracking-[2px] font-semibold hover:bg-[#55624d] hover:text-white transition-colors">
-                                View Details
-                            </button>
-                        </div>
                     </a>
+
+
 
                     {{-- INFO --}}
                     <div class="text-center md:text-left flex flex-col flex-1">

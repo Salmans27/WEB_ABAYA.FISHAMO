@@ -22,7 +22,7 @@
             <div class="grid lg:grid-cols-2 gap-0">
 
                 {{-- LEFT: IMAGE --}}
-                <div class="p-4 sm:p-6 md:p-10 lg:p-12 lg:border-r border-[#e4eae0] bg-[#f8faf7]">
+                <div class="p-4 sm:p-6 md:p-10 lg:p-12 lg:border-r border-[#e4eae0] bg-white">
 
                     @if($product->image)
                         <div class="overflow-hidden rounded-[24px] md:rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
@@ -246,7 +246,7 @@
         }
     }
 
-    const variants = @json($product->variants);
+    const variants = JSON.parse('{!! json_encode($product->variants) !!}');
 
     function checkVariant() {
         const colorInput = document.querySelector('input[name="color"]:checked');

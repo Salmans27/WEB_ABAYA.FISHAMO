@@ -7,10 +7,10 @@
 @section('content')
 
 {{-- HERO BANNER (MASSIVE) --}}
-@if(file_exists(public_path('images/banner-abaya.jpg')))
+@if(file_exists(public_path('images/1.jpg')))
 <section class="relative w-full h-[70vh] md:h-[85vh] overflow-hidden">
     {{-- IMAGE --}}
-    <img src="{{ asset('images/banner-abaya.jpg') }}" 
+    <img src="{{ asset('images/1.jpg') }}" 
          alt="Abaya Fishamo New Collection" 
          class="absolute inset-0 w-full h-full object-cover object-top scale-105 animate-[kenburns_20s_ease-out_forwards]">
     
@@ -108,22 +108,7 @@
                             </div>
                         @endif
 
-                        {{-- Hover Overlay & Quick Add (Desktop) --}}
-                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 hidden md:block">
-                            <form action="{{ route('cart.store') }}" method="POST" class="w-full">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <input type="hidden" name="quantity" value="1">
-                                {{-- We'll assume default size/color if not selected, or redirect to show page. 
-                                     Best to link to product page for variants in luxury e-commerce --}}
-                                <button type="button" onclick="window.location='{{ route('products.show', $product->id) }}'" 
-                                        class="w-full bg-white text-[#55624d] py-3 text-[10px] uppercase tracking-[2px] font-semibold hover:bg-[#55624d] hover:text-white transition-colors">
-                                    View Details
-                                </button>
-                            </form>
-                        </div>
+
 
                         {{-- BADGES --}}
                         @if($product->stock == 0)
