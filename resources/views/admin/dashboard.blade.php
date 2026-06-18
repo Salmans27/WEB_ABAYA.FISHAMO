@@ -141,6 +141,22 @@
 
     </div>
 
+    {{-- CHART SECTION --}}
+    <div class="bg-white rounded-2xl md:rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] p-4 sm:p-6 md:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div class="text-left">
+                <h3 class="text-lg font-semibold text-[#252825]">Grafik Pendapatan</h3>
+                <p class="text-xs text-[#7c8477] mt-0.5">Total pendapatan harian selama 7 hari terakhir</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#edf1eb] text-[#55624d] flex items-center justify-center text-xl shadow-sm">
+                <i class="bi bi-bar-chart-fill"></i>
+            </div>
+        </div>
+        <div class="w-full h-72">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
     {{-- RECENT TRANSACTION TABLES --}}
     <div class="bg-white rounded-2xl md:rounded-[24px] shadow-[0_8px_30px_rgba(0,0,0,0.02)] border border-[#e4eae0] p-4 sm:p-6 md:p-8">
         
@@ -217,5 +233,102 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        // Gradient for chart
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(85, 98, 77, 0.5)'); // #55624d
+        gradient.addColorStop(1, 'rgba(85, 98, 77, 0.0)');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($chartLabels) !!},
+                datasets: [{
+                    label: 'Pendapatan Harian (Rp)',
+                    data: {!! json_encode($chartData) !!},
+                    borderColor: '#55624d',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#55624d',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#2f382a',
+                        titleColor: '#fff',
+                        bodyColor: '#bfc9bc',
+                        padding: 10,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#7c8477',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#edf1eb',
+                            drawBorder: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            color: '#7c8477',
+                            font: {
+                                size: 11
+                            },
+                            callback: function(value, index, values) {
+                                if (value >= 1000000) {
+                                    return 'Rp ' + (value / 1000000).toFixed(1) + 'M';
+                                } else if (value >= 1000) {
+                                    return 'Rp ' + (value / 1000).toFixed(0) + 'K';
+                                }
+                                return 'Rp ' + value;
+                            }
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
 
 @endsection
